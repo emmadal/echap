@@ -1,9 +1,10 @@
+import {IState} from 'types/state';
 import {IUser} from 'types/user';
 
 export type Action = {
-  getUserProfile: (user: IUser) => void;
-  updatePhoto: (photo: string) => void;
-  updateProfile: (user: IUser) => void;
+  getUserProfile: (user: IState['user']) => void;
+  updatePhoto: (photo: IUser['photo']) => void;
+  updateProfile: (user: IState['user']) => void;
   signOut: () => void;
-  changeCategory: (categoryId: string) => void;
+  changeCategory: (category: IState['category']) => void;
 };

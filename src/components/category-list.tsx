@@ -1,5 +1,4 @@
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   FlatList,
   Platform,
@@ -9,40 +8,46 @@ import {
   View,
 } from 'react-native';
 import {categoryPost} from 'constants/category';
-import type {ICategory} from 'types/category';
-
-type Props = PropsWithChildren<{
-  categories: Array<ICategory>;
-}>;
+import {useStore} from 'store';
 
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
-const CategoryFlatList = ({categories}: Props): React.JSX.Element => (
-  <FlatList
-    data={categories}
-    horizontal
-    ItemSeparatorComponent={ItemSeparator}
-    contentContainerStyle={styles.contentContainerStyle}
-    showsHorizontalScrollIndicator={false}
-    contentInsetAdjustmentBehavior="automatic"
-    keyExtractor={item => item.id}
-    renderItem={({item}) => (
-      <TouchableOpacity style={[styles.categoryPressable]}>
-        <Text style={styles.categoryText}>{item.title}</Text>
-      </TouchableOpacity>
-    )}
-  />
-);
-
 const CategoryListing = (): React.JSX.Element => {
+  const changeCategory = useStore(state => state.changeCategory);
+  const categoryId = useStore(state => state.category);
   return (
     <View style={styles.container}>
-      <CategoryFlatList categories={categoryPost} />
+      <FlatList
+        data={categoryPost}
+        horizontal
+        ItemSeparatorComponent={ItemSeparator}
+        contentContainerStyle={styles.contentContainerStyle}
+        showsHorizontalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
+        keyExtractor={item => item.id}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            style={
+              categoryId === item.id
+                ? [styles.categoryPressable, styles.selected]
+                : styles.categoryPressable
+            }
+            onPress={() => changeCategory(item.id)}
+            onLongPress={() => changeCategory('')}>
+            <Text
+              style={
+                categoryId === item.id
+                  ? [styles.categoryText, styles.textSelected]
+                  : styles.categoryText
+              }>
+              {item.title}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
-
-export default CategoryListing;
 
 const styles = StyleSheet.create({
   container: {
@@ -51,11 +56,11 @@ const styles = StyleSheet.create({
   categoryPressable: {
     width: 'auto',
     borderRadius: 17,
-    padding: 9,
+    padding: 8,
     backgroundColor: 'rgb(229 231 235)',
   },
   categoryText: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '400',
     color: 'rgb(38 38 38)',
   },
@@ -68,4 +73,14 @@ const styles = StyleSheet.create({
   separatorWidth: {
     width: 10,
   },
+  selected: {
+    backgroundColor: 'rgb(249 115 22)',
+    borderWidth: 0,
+  },
+  textSelected: {
+    color: 'white',
+    fontWeight: '500',
+  },
 });
+
+export default CategoryListing;

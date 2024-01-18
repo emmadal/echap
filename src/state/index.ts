@@ -12,6 +12,6 @@ export const initialState: IState = {
     whatsapp: '',
     jwt: '',
   },
-  category: 'informatics',
+  category: '1',
   logout: true,
 };

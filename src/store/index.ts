@@ -13,7 +13,7 @@ export const useStore = create(
         set(state => ({user: {...state.user, ...user}, logout: false})),
       updatePhoto: photo => set(state => ({user: {...state.user, photo}})),
       updateProfile: user => set(state => ({user: {...state.user, ...user}})),
-      changeCategory: categoryId => set(() => ({category: categoryId})),
+      changeCategory: category => set(state => ({...state, category})),
       signOut: () => set(initialState),
     }),
     {
