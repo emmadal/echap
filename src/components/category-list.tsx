@@ -15,11 +15,13 @@ type Props = PropsWithChildren<{
   categories: Array<ICategory>;
 }>;
 
+const ItemSeparator = () => <View style={styles.separatorWidth} />;
+
 const CategoryFlatList = ({categories}: Props): React.JSX.Element => (
   <FlatList
     data={categories}
     horizontal
-    ItemSeparatorComponent={() => <View style={{width: 10}} />}
+    ItemSeparatorComponent={ItemSeparator}
     contentContainerStyle={styles.contentContainerStyle}
     showsHorizontalScrollIndicator={false}
     contentInsetAdjustmentBehavior="automatic"
@@ -62,5 +64,8 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     flexGrow: 1,
+  },
+  separatorWidth: {
+    width: 10,
   },
 });
