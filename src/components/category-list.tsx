@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
 } from 'react-native';
 import {categoryPost} from 'constants/category';
 import {useStore} from 'store';
@@ -16,7 +17,7 @@ const CategoryListing = (): React.JSX.Element => {
   const changeCategory = useStore(state => state.changeCategory);
   const categoryId = useStore(state => state.category);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={categoryPost}
         horizontal
@@ -45,19 +46,20 @@ const CategoryListing = (): React.JSX.Element => {
           </TouchableOpacity>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 35 : 20,
+    marginTop: Platform.OS === 'ios' ? 40 : 20,
   },
   categoryPressable: {
     width: 'auto',
     borderRadius: 17,
     padding: 8,
     backgroundColor: 'rgb(229 231 235)',
+    margin: 5,
   },
   categoryText: {
     fontSize: 17,
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   separatorWidth: {
-    width: 10,
+    width: 3,
   },
   selected: {
     backgroundColor: 'rgb(249 115 22)',

@@ -1,0 +1,103 @@
+import {IPost} from 'types/post';
+
+export const posts: Array<IPost> = [
+  {
+    id: '1',
+    title: 'Apple IMAC 24-INCH M1 8-CORE CPU/ 7 - CORE GPU 8GB RAM 256GB SSD',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/99/300172/1.jpg?7526',
+    categoryId: '1',
+    description:
+      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro)',
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '2',
+    title: '5 photos Riviera palmeraie Belle masseuse fontaine jouit a fond',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://images.pexels.com/photos/1055691/pexels-photo-1055691.jpeg',
+    categoryId: '1',
+    description:
+      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro)',
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '3',
+    title: 'Sony Playstation Pack Playstation 5 (PS5) + EA SPORTS FC 24',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://images.pexels.com/photos/13189272/pexels-photo-13189272.jpeg',
+    categoryId: '1',
+    description:
+      'Le pack comprend une console PlayStation 5 et une manette sans fil DualSense, ainsi qu’un bon pour télécharger EA Sports FC 24 (jeu complet) et un bon pour du contenu digital téléchargeable pour EA Sports FC 24 Ultimate Team, qui comprend 1 Pack de Joueurs Rare Gold et 3 Joueurs Iconiques en prêt non échangeables valables pour 5 matchs Ultimate Team. Chargement rapide : Le SSD ultra-rapide maximise vos sessions de jeu avec des temps de chargement quasi-instantanés pour les jeux PS5 installés.',
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '4',
+    title:
+      'Nasco TV LED 50 - 4K UHD - SLIM TV - HDMI - NETFLIX-YOUTUBE-PRIME VIDEO',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/54/554642/1.jpg?0506',
+    categoryId: '1',
+    description:
+      "La résolution 4K améliore la Full High Definition avec 3840 x 2160 pixels. Plus de pixels sur l'écran produisent une image plus claire et succincte, ce qui rend le contenu plus réaliste et fidèle à la réalité. Le contenu non 4K sera amélioré à une qualité proche de 4K. Des performances de couleur améliorées et une reproduction fidèle font passer votre expérience visuelle au niveau supérieur. Films, émissions de télévision, sports, musique - le divertissement que vous aimez est encore meilleur quand vous l'entendez en Dolby Audio.",
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '5',
+    title: 'Apple IMAC 24-INCH M1 8-CORE CPU/ 7 - CORE GPU 8GB RAM 256GB SSD',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/99/300172/1.jpg?7526',
+    categoryId: '1',
+    description:
+      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro)',
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '6',
+    title: '5 photos Riviera palmeraie Belle masseuse fontaine jouit a fond',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://images.pexels.com/photos/1055691/pexels-photo-1055691.jpeg',
+    categoryId: '1',
+    description:
+      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro)',
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '7',
+    title: 'SMART TECHNOLOGY Congélateur Vertical 6 Tiroirs - STCD-335H - 180L',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/06/856911/1.jpg?2933',
+    categoryId: '1',
+    description:
+      "Découvrez le Congelateur vertical STCD-335H, un choix parfait pour répondre à tous vos besoins de stockage alimentaire. Doté d'une capacité généreuse de 180 litres, ce réfrigérateur spacieux vous offre amplement d'espace pour conserver vos aliments frais et vos boissons préférées.",
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+];
