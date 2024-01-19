@@ -1,13 +1,18 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import Home from 'screens/Home';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
+import MyStack from 'routes/MyStack';
 
 function App(): React.JSX.Element {
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Home />
-    </GestureHandlerRootView>
+    <>
+      <NavigationContainer>
+        <GestureHandlerRootView style={styles.container}>
+          <MyStack />
+        </GestureHandlerRootView>
+      </NavigationContainer>
+    </>
   );
 }
 
