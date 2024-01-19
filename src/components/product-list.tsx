@@ -1,9 +1,22 @@
-import React, {memo, useMemo} from 'react';
-import {FlatList, StyleSheet, Text, Image, View} from 'react-native';
+import React, {memo, useCallback, useMemo, useState} from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  Image,
+  View,
+} from 'react-native';
 import {posts} from 'constants/posts';
 import ProductItem from 'components/product-item';
 import {useStore} from 'store';
+import colors from 'themes/colors';
 
+const wait = (timeout: number) => {
+  return new Promise((resolve: any) => setTimeout(resolve, timeout));
+};
+
+// component to show when flatList data is empty
 const EmptyProduct = () => (
   <View style={styles.emptyView}>
     <Image source={require('assets/empty_posts.gif')} style={styles.emptyImg} />
@@ -14,12 +27,14 @@ const EmptyProduct = () => (
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
 const ProductListing = ({search}: {search: string}) => {
-  const store = useStore(state => state.category);
+  // Get the categoryId from global state
+  const categoryId = useStore(state => state.category);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // return a memoize product array
+  // return a memoized products array by categories or by name search
   const products = useMemo(() => {
-    if (store) {
-      const items = posts.filter(item => item.categoryId === store);
+    if (categoryId) {
+      const items = posts.filter(item => item.categoryId === categoryId);
       if (search) {
         const data = items.filter(i =>
           i.title.toLowerCase().includes(search.toLowerCase()),
@@ -29,7 +44,19 @@ const ProductListing = ({search}: {search: string}) => {
       return items;
     }
     return [];
-  }, [store, search]);
+  }, [categoryId, search]);
+
+  // function which trigger the pull refresh
+  const onRefresh = useCallback(async () => {
+    try {
+      setRefreshing(true);
+      wait(2000).then(() => {
+        setRefreshing(false);
+      });
+    } catch (error) {
+      setRefreshing(false);
+    }
+  }, []);
 
   return (
     <FlatList
@@ -44,6 +71,16 @@ const ProductListing = ({search}: {search: string}) => {
       keyExtractor={item => item?.id as string}
       renderItem={({item}) => <ProductItem item={item} />}
       ListEmptyComponent={<EmptyProduct />}
+      refreshing={true}
+      refreshControl={
+        <RefreshControl
+          progressBackgroundColor={colors.white}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.gray.main]}
+          tintColor={colors.gray.main}
+        />
+      }
     />
   );
 };
