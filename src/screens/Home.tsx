@@ -20,10 +20,6 @@ const Home = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
   const sheetRef = useRef<BottomSheet>(null);
 
-  const handleSheetChange = useCallback((index: number) => {
-    console.log('handleSheetChange', index);
-  }, []);
-
   const handleClosePress = useCallback(() => {
     sheetRef.current?.forceClose();
   }, []);
@@ -62,7 +58,7 @@ const Home = () => {
         ref={sheetRef}
         enablePanDownToClose
         snapPoints={snapPoints}
-        onChange={handleSheetChange}>
+        index={-1}>
         <TouchableOpacity onPress={handleClosePress} style={styles.closeBtn}>
           <Icon name="close" size={30} color="black" />
         </TouchableOpacity>
