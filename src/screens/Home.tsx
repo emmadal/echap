@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {optionsFilter} from 'constants/options';
 import {IOption} from 'types/option';
+import colors from 'themes/colors';
 
 const Home = () => {
   const [clicked, setCLicked] = useState(false);
@@ -24,7 +25,7 @@ const Home = () => {
     sheetRef.current?.forceClose();
   }, []);
 
-  const snapPoints = useMemo(() => ['30%', '35%'], []);
+  const snapPoints = useMemo(() => ['30%', '35%', '45%'], []);
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
@@ -53,7 +54,7 @@ const Home = () => {
           <Icon name="options" size={27} color="color: rgb(82 82 82)" />
         </Pressable>
       </View>
-      <ProductListing />
+      <ProductListing search={searchPhrase} />
       <BottomSheet
         ref={sheetRef}
         enablePanDownToClose
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Platform.OS === 'ios' ? 40 : 25,
+    backgroundColor: colors.white,
   },
   inputView: {
     flexDirection: 'row',

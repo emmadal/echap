@@ -1,6 +1,8 @@
-import React from 'react';
-import {FlatList, Pressable, StyleSheet, Text, Image, View} from 'react-native';
+import React, {memo, useMemo} from 'react';
+import {FlatList, StyleSheet, Text, Image, View} from 'react-native';
 import {posts} from 'constants/posts';
+import ProductItem from 'components/product-item';
+import {useStore} from 'store';
 
 const EmptyProduct = () => (
   <View style={styles.emptyView}>
@@ -11,10 +13,27 @@ const EmptyProduct = () => (
 
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
-const ProductListing = (): React.JSX.Element => {
+const ProductListing = ({search}: {search: string}) => {
+  const store = useStore(state => state.category);
+
+  // return a memoize product array
+  const products = useMemo(() => {
+    if (store) {
+      const items = posts.filter(item => item.categoryId === store);
+      if (search) {
+        const data = items.filter(i =>
+          i.title.toLowerCase().includes(search.toLowerCase()),
+        );
+        return data;
+      }
+      return items;
+    }
+    return [];
+  }, [store, search]);
+
   return (
     <FlatList
-      data={posts}
+      data={products}
       ItemSeparatorComponent={ItemSeparator}
       horizontal={false}
       columnWrapperStyle={styles.columnWrapperStyle}
@@ -23,12 +42,7 @@ const ProductListing = (): React.JSX.Element => {
       showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
       keyExtractor={item => item?.id as string}
-      renderItem={({item}) => (
-        <Pressable style={styles.card} onPress={() => {}}>
-          <Image source={{uri: item.banner}} style={styles.image} />
-          <Text style={styles.title}>{item.title}</Text>
-        </Pressable>
-      )}
+      renderItem={({item}) => <ProductItem item={item} />}
       ListEmptyComponent={<EmptyProduct />}
     />
   );
@@ -39,22 +53,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 15,
   },
-  image: {
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    height: '100%',
-    borderRadius: 5,
-  },
   columnWrapperStyle: {
     flexWrap: 'wrap',
-  },
-  card: {
-    backgroundColor: 'rgb(229 231 235)',
-    flex: 1,
-    margin: 10,
-    maxHeight: 250,
-    borderRadius: 5,
-    maxWidth: '50%',
   },
   contentContainerStyle: {
     flexGrow: 1,
@@ -62,12 +62,6 @@ const styles = StyleSheet.create({
   },
   separatorWidth: {
     height: 80,
-  },
-  title: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#4a4a4a',
-    marginTop: 3,
   },
   emptyView: {
     flex: 1,
@@ -87,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductListing;
+export default memo(ProductListing);
