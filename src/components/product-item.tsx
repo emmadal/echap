@@ -1,13 +1,23 @@
 import React, {memo} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {Text, Image, Pressable, StyleSheet} from 'react-native';
 import {IPost} from 'types/post';
 
-const ProductItem = ({item}: {item: IPost}) => (
-  <Pressable style={styles.card} onPress={() => {}}>
-    <Image source={{uri: item.banner}} style={styles.image} />
-    <Text style={styles.title}>{item.title}</Text>
-  </Pressable>
-);
+const ProductItem = ({item}: {item: IPost}) => {
+  const navigation = useNavigation();
+  return (
+    <Pressable
+      style={styles.card}
+      onPress={() =>
+        navigation.navigate('Product', {
+          ...item,
+        })
+      }>
+      <Image source={{uri: item.banner}} style={styles.image} />
+      <Text style={styles.title}>{item.title}</Text>
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   image: {

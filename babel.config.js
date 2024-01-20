@@ -16,6 +16,7 @@ module.exports = {
           state: './src/state/',
           store: './src/store/',
           themes: './src/themes/',
+          utils: './src/utils/',
         },
       },
     ],
