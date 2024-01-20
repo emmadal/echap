@@ -6,8 +6,10 @@ import Divider from 'components/divider';
 import ContactButton from 'components/contact-button';
 import WhatsappButton from 'components/whatsapp-button';
 import ChatButton from 'components/chat-button';
+import {useStore} from 'store';
 
 const Product = ({route}: any) => {
+  const premium = useStore(state => state.user.premium);
   return (
     <ScrollView
       style={styles.container}
@@ -27,8 +29,13 @@ const Product = ({route}: any) => {
           phone={route?.params?.phone}
           title={route?.params?.title}
           image={route?.params.image}
+          premium={premium}
         />
-        <ChatButton title={route?.params?.title} image={route?.params.image} />
+        <ChatButton
+          title={route?.params?.title}
+          image={route?.params.image}
+          premium={premium}
+        />
       </View>
     </ScrollView>
   );
