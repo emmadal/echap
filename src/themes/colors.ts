@@ -13,5 +13,6 @@ const colors = {
     focused: 'rgb(249 115 22)',
     normal: 'rgb(163 163 163)',
   },
+  divider: 'rgb(203 213 225)',
 };
 export default colors;
