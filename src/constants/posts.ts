@@ -10,9 +10,14 @@ export const posts: Array<IPost> = [
       'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/99/300172/1.jpg?7526',
     categoryId: '1',
     description:
-      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro)',
+      'The iMac is an "all-in-one," which houses the computer, drives and monitor in the same case. Apple also makes two computers with separate monitors: a mini desktop and workstation (see Mac mini and Mac Pro). iMac brings incredible, room filling audio to any space. Two pairs of force cancelling woofers create rich, deep bass — and each is balanced with a high performance tweeter for a massive soundstage that takes music, movies and more to the next level.',
     phone: '+2250707070707',
-    photos: [''],
+    photos: [
+      'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-no-id-blue-selection-hero-202310',
+      'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-yellow-selection-hero-202310',
+      'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-orange-selection-hero-202310',
+      'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/imac-24-purple-selection-hero-202310',
+    ],
     whatsapp: '+2250707070707',
   },
   {
@@ -96,6 +101,21 @@ export const posts: Array<IPost> = [
     categoryId: '2',
     description:
       "Découvrez le Congelateur vertical STCD-335H, un choix parfait pour répondre à tous vos besoins de stockage alimentaire. Doté d'une capacité généreuse de 180 litres, ce réfrigérateur spacieux vous offre amplement d'espace pour conserver vos aliments frais et vos boissons préférées.",
+    phone: '+2250707070707',
+    photos: [''],
+    whatsapp: '+2250707070707',
+  },
+  {
+    id: '8',
+    title:
+      'Photo 💯% réelle bb 2 coup +une pipe à la framboise à 5k// yop texaco',
+    price: 980000,
+    authorId: '1',
+    banner:
+      'https://images.locanto.ci/Yopougon-Lubafrique-au-Cafeier-promo-3Cps-10-Mils-Bon-cul-molle/bsp_mobile_gallery_670_5569036362.jpg',
+    categoryId: '11',
+    description:
+      'Vient me beser bb,j attends que toi pour jouir m appuyer les seins me caresser de partout sucer mes seins me doigter la chatte comme le cul et ensuite me prendre dans toutes les positions et m enfoncer ta pine dans mon cul ou ma chatte avec ou sans capote,si tu veux bb tu me beser avec douceur je suis une bonne petite et dévergondée pute qui adore la baise surtout j adore piper en cravate',
     phone: '+2250707070707',
     photos: [''],
     whatsapp: '+2250707070707',
