@@ -3,6 +3,8 @@ export interface IPost {
   title: string;
   price: number;
   authorId: string;
+  author?: string;
+  createdAt?: string;
   categoryId: string;
   banner: string;
   description: string;

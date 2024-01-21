@@ -6,6 +6,8 @@ export const posts: Array<IPost> = [
     title: 'Apple IMAC 24-INCH M1 8-CORE CPU/ 7 - CORE GPU 8GB RAM 256GB SSD',
     price: 980000,
     authorId: '1',
+    author: 'John Doe',
+    createdAt: '2024-01-21T00:26:41.955Z',
     banner:
       'https://ci.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/99/300172/1.jpg?7526',
     categoryId: '1',

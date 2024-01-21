@@ -7,6 +7,7 @@ import ContactButton from 'components/contact-button';
 import WhatsappButton from 'components/whatsapp-button';
 import ChatButton from 'components/chat-button';
 import {useStore} from 'store';
+import MetaTag from 'components/meta-tag';
 
 const Product = ({route}: any) => {
   const premium = useStore(state => state.user.premium);
@@ -19,6 +20,10 @@ const Product = ({route}: any) => {
       <Slide photos={route?.params?.photos} />
       <View style={styles.info}>
         <Text style={styles.title}>{route?.params?.title}</Text>
+        <MetaTag
+          author={route?.params?.author}
+          date={route?.params?.createdAt}
+        />
         <Text style={styles.description}>{route?.params?.description}</Text>
       </View>
       <Divider />
