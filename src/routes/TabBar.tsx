@@ -1,9 +1,10 @@
 import React, {memo} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Platform, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Home from 'screens/Home';
 import colors from 'themes/colors';
+import CreateProduct from 'screens/CreateProduct';
 
 const Tab = createBottomTabNavigator();
 
@@ -72,8 +73,8 @@ const TabBar = () => {
         }}
       />
       <Tab.Screen
-        name="Post"
-        component={Test}
+        name="CreateProduct"
+        component={CreateProduct}
         options={{
           headerTitle: 'Ajouter un article',
           headerStyle: {
