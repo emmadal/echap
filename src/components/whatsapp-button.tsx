@@ -26,8 +26,8 @@ const WhatsappButton: FC<Props> = ({
   const openWhatsapp = useCallback(async () => {
     if (!premium) {
       Alert.alert(
-        'Messagerie',
-        "Souscrivez à l'affre premium pour beneficier de cette fonctionnalité",
+        'Whatsapp',
+        "Souscrivez à l'offre premium pour bénéficier de cette fonctionnalité.",
       );
       return;
     } else {

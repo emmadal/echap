@@ -24,7 +24,7 @@ const ChatButton: FC<Props> = ({title, image, premium}: Props) => {
     if (!premium) {
       Alert.alert(
         'Messagerie',
-        "Souscrivez à l'affre premium pour beneficier de cette fonctionnalité",
+        "Souscrivez à l'offre premium pour bénéficier de cette fonctionnalité.",
       );
       return;
     }
