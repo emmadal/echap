@@ -46,6 +46,8 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>AddedForDebugging</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Autoriser $(PRODUCT_NAME) à accéder à votre camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
