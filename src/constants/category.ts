@@ -9,57 +9,57 @@ export const categoryPost: Array<ICategory> = [
   {
     id: '2',
     label: 'Electroménager',
-    value: '1',
+    value: '2',
   },
   {
     id: '3',
     label: 'Télévision & Electronique',
-    value: '1',
+    value: '3',
   },
   {
     id: '4',
     label: 'Jeux & Console',
-    value: '1',
+    value: '4',
   },
   {
     id: '5',
     label: 'Téléphone & Tablette',
-    value: '1',
+    value: '5',
   },
   {
     id: '6',
     label: 'Mode & Beauté',
-    value: '1',
+    value: '6',
   },
 
   {
     id: '7',
     label: 'Hygiène & Santé',
-    value: '1',
+    value: '7',
   },
   {
     id: '8',
     label: 'Emploi',
-    value: '1',
+    value: '8',
   },
   {
     id: '9',
     label: 'Immobilier',
-    value: '1',
+    value: '9',
   },
   {
     id: '10',
     label: 'Agriculture & Elevage',
-    value: '1',
+    value: '10',
   },
   {
     id: '11',
     label: 'Rencontre & Service',
-    value: '1',
+    value: '11',
   },
   {
     id: '12',
     label: 'Automobile',
-    value: '1',
+    value: '12',
   },
 ];

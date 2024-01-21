@@ -41,7 +41,7 @@ const CategoryListing = (): React.JSX.Element => {
                   ? [styles.categoryText, styles.textSelected]
                   : styles.categoryText
               }>
-              {item.title}
+              {item.label}
             </Text>
           </TouchableOpacity>
         )}
