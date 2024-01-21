@@ -3,51 +3,63 @@ import {ICategory} from 'types/category';
 export const categoryPost: Array<ICategory> = [
   {
     id: '1',
-    title: 'Informatique',
+    label: 'Informatique',
+    value: '1',
   },
   {
     id: '2',
-    title: 'Electroménager',
+    label: 'Electroménager',
+    value: '1',
   },
   {
     id: '3',
-    title: 'Télévision & Electronique',
+    label: 'Télévision & Electronique',
+    value: '1',
   },
   {
     id: '4',
-    title: 'Jeux & Console',
+    label: 'Jeux & Console',
+    value: '1',
   },
   {
     id: '5',
-    title: 'Téléphone & Tablette',
+    label: 'Téléphone & Tablette',
+    value: '1',
   },
   {
     id: '6',
-    title: 'Mode & Beauté',
+    label: 'Mode & Beauté',
+    value: '1',
   },
 
   {
     id: '7',
-    title: 'Hygiène & Santé',
+    label: 'Hygiène & Santé',
+    value: '1',
   },
   {
     id: '8',
-    title: 'Emploi',
+    label: 'Emploi',
+    value: '1',
   },
   {
     id: '9',
-    title: 'Immobilier',
+    label: 'Immobilier',
+    value: '1',
   },
   {
     id: '10',
-    title: 'Agriculture & Elevage',
+    label: 'Agriculture & Elevage',
+    value: '1',
   },
   {
     id: '11',
-    title: 'Rencontre & Service',
+    label: 'Rencontre & Service',
+    value: '1',
   },
   {
     id: '12',
-    title: 'Automobile',
+    label: 'Automobile',
+    value: '1',
   },
 ];

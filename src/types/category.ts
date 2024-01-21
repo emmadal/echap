@@ -1,5 +1,6 @@
 export interface ICategory {
   id: string;
-  title: string;
+  label: string;
   createdAt?: Date;
+  value: string;
 }
