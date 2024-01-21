@@ -44,8 +44,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>AddedForDebugging</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Autoriser $(PRODUCT_NAME) à accéder à votre librairie photo</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Autoriser $(PRODUCT_NAME) à accéder à votre librairie photo</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
