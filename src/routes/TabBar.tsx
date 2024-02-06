@@ -1,10 +1,18 @@
 import React, {memo} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Pressable,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Home from 'screens/Home';
 import colors from 'themes/colors';
 import CreateProduct from 'screens/CreateProduct';
+import Profile from 'screens/Profile';
+import Avatar from 'components/avatar';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +36,7 @@ const TabIcon = memo(({focused, icon}: TabIconProps) => (
 ));
 
 const TabBar = () => {
+  const {height} = useWindowDimensions();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -42,7 +51,7 @@ const TabBar = () => {
           elevation: 5,
           left: 25,
           right: 25,
-          bottom: 40,
+          bottom: 30,
           borderRadius: 50,
           paddingBottom: 0,
         },
@@ -97,14 +106,25 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Test}
+        component={Profile}
         options={{
-          headerTitle: 'Mon profil',
+          headerTitle: () => (
+            <Pressable style={styles.imgContainer}>
+              <Avatar
+                source="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg"
+                size={100}
+              />
+            </Pressable>
+          ),
           headerStyle: {
             backgroundColor: colors.primary,
+            height: height / 4.5,
+            // borderBottomRightRadius: 200,
+            // borderBottomLeftRadius: 200,
+            borderBottomEndRadius: 300,
           },
-          headerTitleStyle: {
-            color: 'white',
+          headerBackgroundContainerStyle: {
+            backgroundColor: colors.white,
           },
           tabBarIcon: ({focused}) =>
             (<TabIcon focused={focused} icon="user" />) as React.ReactNode,
@@ -141,6 +161,15 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 25,
+    backgroundColor: colors.white,
+  },
+  imgContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: -50,
+    borderWidth: 5,
+    borderColor: colors.white,
+    borderRadius: 100,
     backgroundColor: colors.white,
   },
 });
