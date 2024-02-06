@@ -6,13 +6,11 @@ import MyStack from 'routes/MyStack';
 
 function App(): React.JSX.Element {
   return (
-    <>
-      <NavigationContainer>
-        <GestureHandlerRootView style={styles.container}>
-          <MyStack />
-        </GestureHandlerRootView>
-      </NavigationContainer>
-    </>
+    <NavigationContainer>
+      <GestureHandlerRootView style={styles.container}>
+        <MyStack />
+      </GestureHandlerRootView>
+    </NavigationContainer>
   );
 }
 
