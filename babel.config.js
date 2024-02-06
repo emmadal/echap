@@ -17,6 +17,7 @@ module.exports = {
           store: './src/store/',
           themes: './src/themes/',
           utils: './src/utils/',
+          api: './src/api',
         },
       },
     ],

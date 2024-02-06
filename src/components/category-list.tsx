@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Platform,
@@ -8,24 +8,42 @@ import {
   View,
   SafeAreaView,
 } from 'react-native';
-import {categoryPost} from 'constants/category';
 import {useStore} from 'store';
+import {getCategories} from 'api';
+import {ICategory} from 'types/category';
 
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
+
+const EmptyItem = () => (
+  <View style={styles.emptyView}>
+    <Text style={styles.empty}>Aucune categorie </Text>
+  </View>
+);
 
 const CategoryListing = (): React.JSX.Element => {
   const changeCategory = useStore(state => state.changeCategory);
   const categoryId = useStore(state => state.category);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  const handleCategories = async () => {
+    const response = await getCategories();
+    setCategories(response);
+  };
+
+  useEffect(() => {
+    handleCategories();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={categoryPost}
+        data={categories}
         horizontal
         ItemSeparatorComponent={ItemSeparator}
         contentContainerStyle={styles.contentContainerStyle}
         showsHorizontalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         renderItem={({item}) => (
           <TouchableOpacity
             style={
@@ -34,17 +52,18 @@ const CategoryListing = (): React.JSX.Element => {
                 : styles.categoryPressable
             }
             onPress={() => changeCategory(item.id)}
-            onLongPress={() => changeCategory('')}>
+            onLongPress={() => changeCategory(0)}>
             <Text
               style={
                 categoryId === item.id
                   ? [styles.categoryText, styles.textSelected]
                   : styles.categoryText
               }>
-              {item.label}
+              {item.title}
             </Text>
           </TouchableOpacity>
         )}
+        ListEmptyComponent={<EmptyItem />}
       />
     </SafeAreaView>
   );
@@ -82,6 +101,15 @@ const styles = StyleSheet.create({
   textSelected: {
     color: 'white',
     fontWeight: '500',
+  },
+  empty: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  emptyView: {
+    flex: 1,
+    marginVertical: 10,
   },
 });
 
