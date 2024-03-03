@@ -3,14 +3,13 @@ import RNPickerSelect from 'react-native-picker-select';
 import {View, StyleSheet} from 'react-native';
 import colors from 'themes/colors';
 import Icon from 'react-native-vector-icons/Feather';
-import {ICategory} from 'types/category';
 
 const ChevronDown = () => (
   <Icon name="chevron-down" size={24} color={colors.text} />
 );
 
 type Props = {
-  categories: ICategory[];
+  categories: any[];
   setFieldValue: any;
 };
 
@@ -54,7 +53,6 @@ const Dropdown: FC<Props> = ({categories, setFieldValue}) => {
 const styles = StyleSheet.create({
   viewInput: {
     flex: 1,
-    marginTop: 20,
   },
   inputIOS: {
     fontSize: 16,

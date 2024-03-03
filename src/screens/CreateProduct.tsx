@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -17,19 +17,23 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import colors from 'themes/colors';
-import {PHOTO_SIZE_MAX} from 'constants/size';
+import {PHOTO_SIZE_MAX, PREMIUM_PHOTO_SIZE_MAX} from 'constants/size';
 import {requestMediaPermission} from 'utils/permissions';
 import {phoneNumber} from 'utils/regex';
 import {useStore} from 'store';
 import Icon from 'react-native-vector-icons/Feather';
 import Dropdown from 'components/dropdown';
-import {categoryPost} from 'constants/category';
+import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
+import {getCategories} from 'api';
 
 const CreateProduct = () => {
   const [visible, setVisible] = useState(false);
   const [otherVisible, setOtherVisible] = useState(false);
-  const imageURL = useRef('');
+  const [categories, setCategories] = useState<any>([]);
+  const imageBanner = useRef('');
+  let richText = useRef(null);
   const premium = useStore(state => state.user.premium);
+  const imageURL = useRef(null);
 
   // choose local media to upload the banner
   const uploadBanner = useCallback(async () => {
@@ -42,17 +46,26 @@ const CreateProduct = () => {
       });
       if (result?.assets?.length) {
         const fileSize = result.assets[0].fileSize ?? 0;
-        if (fileSize >= PHOTO_SIZE_MAX) {
+        if (!premium && fileSize >= PHOTO_SIZE_MAX) {
           Alert.alert(
             'Fichier volumineux',
             "Passez à l'offre premium pour télécharger les fichiers volumineux",
           );
           return;
         }
-        setVisible(!visible);
+        if (premium && fileSize <= PREMIUM_PHOTO_SIZE_MAX) {
+          // upload photo here
+          setVisible(!visible);
+          const formData = new FormData();
+          formData.append('file', {
+            name: result?.assets[0].fileName,
+            uri: result?.assets[0].uri,
+            type: result?.assets[0].type,
+          });
+        }
       }
     }
-  }, [visible]);
+  }, [premium, visible]);
 
   const uploadOthersImage = useCallback(
     async (limit: number) => {
@@ -65,18 +78,24 @@ const CreateProduct = () => {
         });
         if (result?.assets?.length) {
           const fileSize = result.assets[0].fileSize ?? 0;
-          if (fileSize >= PHOTO_SIZE_MAX) {
+          if (!premium && fileSize >= PHOTO_SIZE_MAX) {
             Alert.alert(
               'Fichier volumineux',
               "Passez à l'offre premium pour télécharger les fichiers volumineux",
             );
             return;
           }
+          if (premium && fileSize >= PREMIUM_PHOTO_SIZE_MAX) {
+            Alert.alert(
+              'Fichier volumineux',
+              'Veuillez choisir un fichier en dessous de 20MB',
+            );
+          }
           setOtherVisible(!otherVisible);
         }
       }
     },
-    [otherVisible],
+    [otherVisible, premium],
   );
 
   const othersPicture = useCallback(async () => {
@@ -100,6 +119,19 @@ const CreateProduct = () => {
     }
     await uploadOthersImage(10);
   }, [premium, uploadOthersImage]);
+
+  const handleCategories = useCallback(async () => {
+    const data: any = [];
+    const req = await getCategories();
+    req.map(c =>
+      data.push({id: String(c.id), label: c.title, value: String(c.id)}),
+    );
+    setCategories(data);
+  }, []);
+
+  useEffect(() => {
+    handleCategories();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -134,8 +166,7 @@ const CreateProduct = () => {
               .min(5, 'Minimum 10 caractères')
               .required('Entrez la description'),
             phone: yup
-              .string()
-              .matches(phoneNumber, 'Entrez un contact valide')
+              .string().matches(phoneNumber, 'Entrez un contact valide')
               .required('Entrez votre contact'),
           })}
           onSubmit={values => {
@@ -154,7 +185,7 @@ const CreateProduct = () => {
               <TouchableOpacity
                 onPress={uploadBanner}
                 style={styles.uploadZone}>
-                {imageURL.current?.length > 0 ? (
+                {imageBanner.current?.length > 0 ? (
                   <>
                     <Image
                       source={{uri: imageURL.current}}
@@ -165,7 +196,7 @@ const CreateProduct = () => {
                 ) : (
                   <>
                     <Icon size={30} name="image" color={colors.text} />
-                    <Text>Télécharger l'image principale</Text>
+                    <Text>Sélectionnez l'image principale</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -179,6 +210,7 @@ const CreateProduct = () => {
               ) : null}
 
               <View style={styles.viewInput}>
+                <Text style={styles.label}>Titre</Text>
                 <TextInput
                   placeholder="Titre"
                   value={values.title}
@@ -196,6 +228,7 @@ const CreateProduct = () => {
                 )}
               </View>
               <View style={styles.viewInput}>
+                <Text style={styles.label}>Prix</Text>
                 <TextInput
                   placeholder="Prix"
                   value={values.price}
@@ -214,6 +247,7 @@ const CreateProduct = () => {
                 )}
               </View>
               <View style={styles.viewInput}>
+                <Text style={styles.label}>Contact</Text>
                 <TextInput
                   placeholder="Contact"
                   value={values.phone}
@@ -232,8 +266,9 @@ const CreateProduct = () => {
                 )}
               </View>
               <View style={styles.viewInput}>
+                <Text style={styles.label}>Catégorie</Text>
                 <Dropdown
-                  categories={categoryPost}
+                  categories={categories}
                   setFieldValue={setFieldValue}
                 />
                 {errors.categoryId && touched.categoryId && (
@@ -255,7 +290,7 @@ const CreateProduct = () => {
                   ) : (
                     <>
                       <Icon size={30} name="image" color={colors.text} />
-                      <Text>Télécharger d'autres images</Text>
+                      <Text>Sélectionnez d'autres images</Text>
                     </>
                   )}
                 </TouchableOpacity>
@@ -267,6 +302,33 @@ const CreateProduct = () => {
                     color={colors.primary}
                   />
                 ) : null}
+              </View>
+              <View style={[styles.viewInput, styles.editorText]}>
+                <Text style={styles.label}>Description de l'article</Text>
+                <RichEditor
+                  ref={richText}
+                  androidHardwareAccelerationDisabled={true}
+                  onChange={htmlText => setFieldValue('description', htmlText)}
+                  style={styles.richTextEditorStyle}
+                  initialHeight={150}
+                  initialContentHTML={'<br/>'}
+                />
+                <RichToolbar
+                  editor={richText}
+                  actions={[
+                    actions.setBold,
+                    actions.setItalic,
+                    actions.setUnderline,
+                    actions.insertLink,
+                    actions.insertBulletsList,
+                    actions.insertOrderedList,
+                  ]}
+                />
+                {errors.description && (
+                  <Text style={[styles.error, {color: colors.error}]}>
+                    {errors.description}
+                  </Text>
+                )}
               </View>
               <TouchableOpacity
                 style={styles.button}
@@ -285,6 +347,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+    paddingBottom: 100,
   },
   keyboard: {flex: 1},
   contentScroll: {
@@ -293,11 +356,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   viewInput: {
-    marginVertical: 3,
+    marginVertical: 13,
   },
   richeEditor: {
     marginTop: 20,
-    // marginBottom: 100,
   },
   text: {
     fontWeight: '500',
@@ -319,11 +381,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray.light,
     padding: 15,
     width: '100%',
-    marginTop: 15,
     color: colors.text,
     borderColor: colors.dark,
     borderWidth: 0.5,
     borderRadius: 2,
+  },
+  label: {
+    fontWeight: '500',
+    fontSize: 15,
+    marginVertical: 3,
   },
   progress: {
     marginTop: 10,
@@ -357,7 +423,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: 55,
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 100,
     shadowOffset: {
       width: 0,
       height: 12,
@@ -370,6 +436,9 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '600',
     fontSize: 17,
+  },
+  editorText: {
+    marginTop: 20,
   },
 });
 
