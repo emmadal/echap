@@ -4,14 +4,16 @@ export const initialState: IState = {
   user: {
     name: '',
     city: '',
+    cityId: 0,
     phone: '',
     premium: false,
     bio: '',
     email: '',
     photo: '',
     whatsapp: '',
-    jwt: '',
+    tiktok: '',
+    instagram: '',
   },
-  category: '1',
+  category: 0,
   logout: true,
 };

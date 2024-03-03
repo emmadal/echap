@@ -15,11 +15,11 @@ import {phoneRegex} from 'utils/regex';
 import colors from 'themes/colors';
 import DialpadKeypad from 'components/DialpadKeypad';
 import z from 'zod';
+import {useNavigation} from '@react-navigation/native';
 
 const phoneSchema = z.object({
   phone: z
     .string()
-    .max(10, 'Le numéro est de 10 chiffres uniquement')
     .regex(phoneRegex, 'Le numéro est de 10 chiffres uniquement')
     .trim(),
 });
@@ -33,6 +33,7 @@ const dialPadTextSize = dialPadSize * 0.35;
 
 const Login = () => {
   const [code, setCode] = useState([]);
+  const navigation = useNavigation();
 
   const methods = useForm<Inputs>({
     resolver: zodResolver(phoneSchema),
@@ -48,8 +49,7 @@ const Login = () => {
     <FormProvider {...methods}>
       <View style={styles.container}>
         <Text style={styles.title}>
-          Bienvenue sur eChap! Pour vous connecter, entrez votre numéro de
-          téléphone
+          Bienvenue sur eChap! Pour vous connecter, entrez votre numéro
         </Text>
         <View style={styles.row}>
           <View style={styles.inputCode}>
@@ -88,15 +88,17 @@ const Login = () => {
           </Text>
         )}
 
-        <View style={styles.textContainer}>
-          <DialpadKeypad
-            dialPadContent={dialPadContent}
-            setCode={setCode}
-            code={code}
-            dialPadSize={dialPadSize}
-            dialPadTextSize={dialPadTextSize}
-          />
-        </View>
+        <DialpadKeypad
+          dialPadContent={dialPadContent}
+          setCode={setCode}
+          code={code}
+          dialPadSize={dialPadSize}
+          dialPadTextSize={dialPadTextSize}
+        />
+
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.signupButton}>Créer un compte</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={methods.handleSubmit(onSubmit)}>
@@ -110,15 +112,9 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',
     marginTop: Platform.OS === 'ios' ? 55 : 30,
     backgroundColor: colors.white,
     paddingHorizontal: 30,
-  },
-  textContainer: {
-    flex: 1,
-    height: '100%',
-    marginTop: 15,
   },
   flag: {
     width: 23,
@@ -132,7 +128,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginTop: 25,
+    marginTop: 30,
     alignItems: 'center',
   },
   inputCode: {
@@ -162,6 +158,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 17,
   },
+  signupButton: {
+    color: colors.primary,
+    width: 'auto',
+    fontWeight: '600',
+    fontSize: 17,
+    alignSelf: 'center',
+    marginBottom: 40,
+  },
   button: {
     borderRadius: 10,
     backgroundColor: colors.primary,
@@ -171,17 +175,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'center',
-    height: 45,
-    marginTop: 10,
-    marginBottom: 100,
+    height: 50,
     shadowOffset: {
       width: 0,
       height: 12,
     },
+    marginBottom: 80,
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
     elevation: 24,
-    marginVertical: 10,
   },
 });
+
 export default Login;

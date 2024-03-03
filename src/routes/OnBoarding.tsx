@@ -1,19 +1,12 @@
 import React, {memo} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import Icon from 'react-native-vector-icons/Feather';
 import {StyleSheet} from 'react-native';
 import colors from 'themes/colors';
 import Login from 'screens/Login';
+import Register from 'screens/Register';
 
 const Stack = createStackNavigator();
-
-const splitTitle = (title: string): string => {
-  if (title.length > 22) {
-    return title.slice(0, 22) + '...';
-  }
-  return title;
-};
 
 const BackIcon = memo(() => (
   <Icon
@@ -32,6 +25,20 @@ const OnBoarding = () => {
         component={Login}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          title: 'Création de compte',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+          headerStyle: {
+            borderBottomColor: 'transparent',
+            borderBottomWidth: 0,
+          },
+          headerBackImage: () => (<BackIcon />) as React.ReactNode,
         }}
       />
     </Stack.Navigator>
