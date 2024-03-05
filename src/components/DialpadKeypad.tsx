@@ -10,6 +10,7 @@ type Props = {
   setCode: React.Dispatch<React.SetStateAction<never[]>>;
   dialPadSize: number;
   dialPadTextSize: number;
+  name: string;
 };
 
 const DialpadKeypad = ({
@@ -18,19 +19,30 @@ const DialpadKeypad = ({
   setCode,
   dialPadSize,
   dialPadTextSize,
+  name,
 }: Props) => {
   const {setValue} = useFormContext();
 
   const handlePressKey = (item: string | number) => {
     if (item === 'X') {
       setCode(prev => prev.slice(0, -1));
-      setValue('phone', String(code.slice(0, -1)).replaceAll(',', ''));
+      setValue(name, String(code.slice(0, -1)).replaceAll(',', ''));
     } else {
       const value = [...code, item];
-      if (value.length < 11) {
-        setCode(value as never[]);
-        setValue('phone', String(value).replaceAll(',', ''));
-        return;
+      if (name === 'phone') {
+        if (value.length < 11) {
+          setCode(value as never[]);
+          setValue(name, String(value).replaceAll(',', ''));
+          return;
+        }
+      }
+
+      if (name === 'otp') {
+        if (value.length < 6) {
+          setCode(value as never[]);
+          setValue(name, String(value).replaceAll(',', ''));
+          return;
+        }
       }
       return;
     }

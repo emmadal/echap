@@ -2,45 +2,43 @@ import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
-  TextInput,
-  Platform,
   Text,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm, Controller, FormProvider} from 'react-hook-form';
-import {phoneRegex} from 'utils/regex';
+import {otpRegex} from 'utils/regex';
 import colors from 'themes/colors';
 import DialpadKeypad from 'components/DialpadKeypad';
 import z from 'zod';
 import {useNavigation} from '@react-navigation/native';
 import {useMutation} from '@tanstack/react-query';
 import {login} from 'api';
+import DialpadPin from 'components/DialPin';
 
-const phoneSchema = z.object({
-  phone: z
-    .string()
-    .regex(phoneRegex, 'Le numéro est de 10 chiffres uniquement')
-    .trim(),
+const otpSchema = z.object({
+  otp: z.string().regex(otpRegex, 'Le code est de 5 chiffres').trim(),
 });
 
-type Inputs = z.infer<typeof phoneSchema>;
+type Inputs = z.infer<typeof otpSchema>;
 const {width} = Dimensions.get('window');
 
 const dialPadContent = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'X'];
 const dialPadSize = width * 0.2;
 const dialPadTextSize = dialPadSize * 0.35;
+const pinLength = 5;
+const pinContainerSize = width / 2;
+const pinSize = pinContainerSize / pinLength;
 
-const Login = () => {
+const OTP = ({route}) => {
   const [code, setCode] = useState([]);
   const navigation = useNavigation();
-
+  const {phone} = route.params;
   const methods = useForm<Inputs>({
-    resolver: zodResolver(phoneSchema),
+    resolver: zodResolver(otpSchema),
     defaultValues: {
-      phone: '',
+      otp: '',
     },
     mode: 'onChange',
   });
@@ -51,87 +49,65 @@ const Login = () => {
       return response;
     },
     onSuccess: data => {
-      const phone = methods.getValues('phone');
       if (data.success) {
+        methods.reset();
         navigation.navigate('OTP', {
           code: data.otp,
-          phone: `+225${phone}`,
+          phone: data.phone,
         });
-        methods.reset();
       }
     },
   });
 
   const onSubmit = (data: Inputs) => {
-    const phone = `+225${data.phone}`;
-    mutation.mutate({phone});
+    mutation.mutate({otp: data.otp});
   };
 
   return (
     <FormProvider {...methods}>
       <View style={styles.container}>
         <Text style={styles.title}>
-          Bienvenue sur eChap! Pour vous connecter, entrez votre numéro
+          Entrez le code de validation envoyé par SMS à votre numéro : {phone}
         </Text>
         {mutation.isError && (
           <Text style={styles.error}>{mutation.error?.message}</Text>
         )}
-
-        <View style={styles.row}>
-          <View style={styles.inputCode}>
-            <Image source={require('assets/civ.png')} style={styles.flag} />
-            <TextInput
-              value="+225"
-              style={[styles.input, {paddingLeft: 23}]}
-              editable={false}
+        <Controller
+          control={methods.control}
+          name="otp"
+          rules={{required: true}}
+          render={() => (
+            <DialpadPin
+              pinLength={pinLength}
+              pinSize={pinSize}
+              code={code}
+              dialPadContent={dialPadContent}
             />
-          </View>
-          <View style={styles.inputWrap}>
-            <Controller
-              control={methods.control}
-              name="phone"
-              rules={{required: true, maxLength: 10, max: 10}}
-              render={({field: {onBlur, onChange, value}}) => (
-                <TextInput
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  maxLength={10}
-                  value={value}
-                  placeholder="XX XX XX XX XX"
-                  style={styles.input}
-                  placeholderTextColor={colors.text}
-                  selectionColor={colors.primary}
-                  underlineColorAndroid="transparent"
-                  editable={false}
-                />
-              )}
-            />
-          </View>
-        </View>
-        {methods.formState.errors.phone && (
+          )}
+        />
+        {methods.formState.errors.otp && (
           <Text style={styles.error}>
-            {methods.formState.errors.phone.message}
+            {methods.formState.errors.otp.message}
           </Text>
         )}
-
         <DialpadKeypad
           dialPadContent={dialPadContent}
           setCode={setCode}
           code={code}
           dialPadSize={dialPadSize}
           dialPadTextSize={dialPadTextSize}
-          name="phone"
+          name="otp"
         />
 
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupButton}>Créer un compte</Text>
+        <TouchableOpacity>
+          <Text style={styles.signupButton}>Renvoyez le code</Text>
         </TouchableOpacity>
         <TouchableOpacity
           disabled={mutation.isPending}
           style={styles.button}
           onPress={methods.handleSubmit(onSubmit)}>
           <Text style={styles.textButton}>
-            {mutation.isPending ? 'Connexion...' : 'Se connecter'}
+            {mutation.isPending ? 'Verification...' : 'Valider'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -142,7 +118,6 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 55 : 30,
     backgroundColor: colors.white,
     paddingHorizontal: 30,
   },
@@ -153,21 +128,10 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.error,
-    fontSize: 14,
-    marginVertical: 5,
+    fontSize: 15,
+    textAlign: 'center',
   },
-  row: {
-    flexDirection: 'row',
-    marginTop: 30,
-    alignItems: 'center',
-  },
-  inputCode: {
-    flexDirection: 'row',
-  },
-  inputWrap: {
-    flex: 1,
-    marginHorizontal: 15,
-  },
+
   input: {
     backgroundColor: 'transparent',
     color: colors.text,
@@ -178,10 +142,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '500',
-    fontSize: 18,
+    fontSize: 17,
     flexWrap: 'wrap',
     lineHeight: 30,
-    marginTop: 40,
+    marginTop: 20,
   },
   textButton: {
     color: colors.white,
@@ -217,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default OTP;

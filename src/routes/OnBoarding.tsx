@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import colors from 'themes/colors';
 import Login from 'screens/Login';
 import Register from 'screens/Register';
+import OTP from 'screens/OTP';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,20 @@ const OnBoarding = () => {
         component={Register}
         options={{
           title: 'Création de compte',
+          headerBackTitleVisible: false,
+          headerTitleAlign: 'center',
+          headerStyle: {
+            borderBottomColor: 'transparent',
+            borderBottomWidth: 0,
+          },
+          headerBackImage: () => (<BackIcon />) as React.ReactNode,
+        }}
+      />
+      <Stack.Screen
+        name="OTP"
+        component={OTP}
+        options={{
+          title: 'Validation OTP',
           headerBackTitleVisible: false,
           headerTitleAlign: 'center',
           headerStyle: {
