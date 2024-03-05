@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   FlatList,
   Platform,
@@ -7,10 +7,11 @@ import {
   Text,
   View,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import {useStore} from 'store';
-import {getCategories} from 'api';
-import {ICategory} from 'types/category';
+import useCategory from 'hooks/useCategory';
+import colors from 'themes/colors';
 
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
@@ -23,48 +24,45 @@ const EmptyItem = () => (
 const CategoryListing = (): React.JSX.Element => {
   const changeCategory = useStore(state => state.changeCategory);
   const categoryId = useStore(state => state.category);
-  const [categories, setCategories] = useState<ICategory[]>([]);
-
-  const handleCategories = async () => {
-    const response = await getCategories();
-    setCategories(response);
-  };
-
-  useEffect(() => {
-    handleCategories();
-  }, []);
+  const {isPending, isError, data, error} = useCategory();
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={categories}
-        horizontal
-        ItemSeparatorComponent={ItemSeparator}
-        contentContainerStyle={styles.contentContainerStyle}
-        showsHorizontalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="automatic"
-        keyExtractor={item => String(item.id)}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={
-              categoryId === item.id
-                ? [styles.categoryPressable, styles.selected]
-                : styles.categoryPressable
-            }
-            onPress={() => changeCategory(item.id)}
-            onLongPress={() => changeCategory(0)}>
-            <Text
+      {isPending ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : isError ? (
+        <Text style={styles.error}>{error?.message}</Text>
+      ) : (
+        <FlatList
+          data={data || []}
+          horizontal
+          ItemSeparatorComponent={ItemSeparator}
+          contentContainerStyle={styles.contentContainerStyle}
+          showsHorizontalScrollIndicator={false}
+          contentInsetAdjustmentBehavior="automatic"
+          keyExtractor={item => String(item.id)}
+          renderItem={({item}) => (
+            <TouchableOpacity
               style={
                 categoryId === item.id
-                  ? [styles.categoryText, styles.textSelected]
-                  : styles.categoryText
-              }>
-              {item.title}
-            </Text>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={<EmptyItem />}
-      />
+                  ? [styles.categoryPressable, styles.selected]
+                  : styles.categoryPressable
+              }
+              onPress={() => changeCategory(item.id)}
+              onLongPress={() => changeCategory(0)}>
+              <Text
+                style={
+                  categoryId === item.id
+                    ? [styles.categoryText, styles.textSelected]
+                    : styles.categoryText
+                }>
+                {item.title}
+              </Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={<EmptyItem />}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -110,6 +108,11 @@ const styles = StyleSheet.create({
   emptyView: {
     flex: 1,
     marginVertical: 10,
+  },
+  error: {
+    color: colors.error,
+    fontSize: 15,
+    textAlign: 'center',
   },
 });
 
