@@ -16,6 +16,8 @@ import colors from 'themes/colors';
 import DialpadKeypad from 'components/DialpadKeypad';
 import z from 'zod';
 import {useNavigation} from '@react-navigation/native';
+import {useMutation} from '@tanstack/react-query';
+import {login} from 'api';
 
 const phoneSchema = z.object({
   phone: z
@@ -43,7 +45,26 @@ const Login = () => {
     mode: 'onChange',
   });
 
-  const onSubmit = (data: Inputs) => console.log(`+225${data.phone}`);
+  const mutation = useMutation({
+    mutationFn: async (data: Inputs) => {
+      const response = await login(data.phone);
+      return response;
+    },
+    onSuccess: data => {
+      if (data.success) {
+        methods.reset();
+        navigation.navigate('OTP', {
+          code: data.otp,
+          phone: data.phone,
+        });
+      }
+    },
+  });
+
+  const onSubmit = (data: Inputs) => {
+    const phone = `+225${data.phone}`;
+    mutation.mutate({phone});
+  };
 
   return (
     <FormProvider {...methods}>
@@ -51,6 +72,10 @@ const Login = () => {
         <Text style={styles.title}>
           Bienvenue sur eChap! Pour vous connecter, entrez votre numéro
         </Text>
+        {mutation.isError && (
+          <Text style={styles.error}>{mutation.error?.message}</Text>
+        )}
+
         <View style={styles.row}>
           <View style={styles.inputCode}>
             <Image source={require('assets/civ.png')} style={styles.flag} />
@@ -100,9 +125,12 @@ const Login = () => {
           <Text style={styles.signupButton}>Créer un compte</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={mutation.isPending}
           style={styles.button}
           onPress={methods.handleSubmit(onSubmit)}>
-          <Text style={styles.textButton}>Se connecter</Text>
+          <Text style={styles.textButton}>
+            {mutation.isPending ? 'Connexion...' : 'Se connecter'}
+          </Text>
         </TouchableOpacity>
       </View>
     </FormProvider>

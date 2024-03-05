@@ -11,3 +11,15 @@ export const getCategories = async (): Promise<ICategory[]> => {
   const response = await req.json();
   return response?.data;
 };
+
+export const login = async (phone: string) => {
+  const req = await fetch(url.login, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({phone}),
+  });
+  const response = await req.json();
+  return response;
+};

@@ -6,8 +6,10 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import MyStack from 'routes/MyStack';
 import OnBoarding from 'routes/OnBoarding';
+import {useStore} from 'store';
 
 function App(): React.JSX.Element {
+  const logout = useStore(state => state.logout);
   const onAppStateChange = (status: AppStateStatus) => {
     if (Platform.OS !== 'web') {
       focusManager.setFocused(status === 'active');
@@ -22,8 +24,7 @@ function App(): React.JSX.Element {
   return (
     <NavigationContainer>
       <GestureHandlerRootView style={styles.container}>
-        <MyStack />
-        {/* <OnBoarding /> */}
+        {logout ? <OnBoarding /> : <MyStack />}
       </GestureHandlerRootView>
     </NavigationContainer>
   );
