@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm, Controller, FormProvider} from 'react-hook-form';
@@ -16,6 +17,7 @@ import colors from 'themes/colors';
 import DialpadKeypad from 'components/DialpadKeypad';
 import z from 'zod';
 import {useNavigation} from '@react-navigation/native';
+import * as Keychain from 'react-native-keychain';
 import {useMutation} from '@tanstack/react-query';
 import {login} from 'api';
 
@@ -50,15 +52,20 @@ const Login = () => {
       const response = await login(data.phone);
       return response;
     },
-    onSuccess: data => {
+    onSuccess: async data => {
       const phone = methods.getValues('phone');
       if (data.success) {
+        await Keychain.setGenericPassword(`+225${phone}`, data?.data);
         navigation.navigate('OTP', {
-          code: data.otp,
           phone: `+225${phone}`,
         });
         methods.reset();
+        return;
       }
+      Alert.alert('Error', data?.message);
+    },
+    onError(error) {
+      Alert.alert('Error', error.message);
     },
   });
 

@@ -61,7 +61,7 @@ export default DialpadPin;
 const styles = StyleSheet.create({
   dialPadPinContainer: {
     flexDirection: 'row',
-    marginVertical: 13,
+    marginVertical: 20,
     justifyContent: 'space-between',
   },
   pinContentContainer: {

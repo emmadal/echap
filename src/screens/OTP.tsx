@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, startTransition} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm, Controller, FormProvider} from 'react-hook-form';
@@ -12,10 +13,11 @@ import {otpRegex} from 'utils/regex';
 import colors from 'themes/colors';
 import DialpadKeypad from 'components/DialpadKeypad';
 import z from 'zod';
-import {useNavigation} from '@react-navigation/native';
 import {useMutation} from '@tanstack/react-query';
-import {login} from 'api';
 import DialpadPin from 'components/DialPin';
+import useOTP from 'hooks/useOTP';
+import {getOTP, verificationOTP} from 'api';
+import {useStore} from 'store';
 
 const otpSchema = z.object({
   otp: z.string().regex(otpRegex, 'Le code est de 5 chiffres').trim(),
@@ -32,36 +34,39 @@ const pinContainerSize = width / 2;
 const pinSize = pinContainerSize / pinLength;
 
 const OTP = ({route}) => {
+  useOTP();
+  const getUserProfile = useStore(state => state.getUserProfile);
   const [code, setCode] = useState([]);
-  const navigation = useNavigation();
   const {phone} = route.params;
   const methods = useForm<Inputs>({
     resolver: zodResolver(otpSchema),
-    defaultValues: {
-      otp: '',
-    },
     mode: 'onChange',
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: Inputs) => {
-      const response = await login(data.phone);
+    mutationFn: async (text: Inputs) => {
+      const response = await verificationOTP(text.otp);
       return response;
     },
-    onSuccess: data => {
-      if (data.success) {
-        methods.reset();
-        navigation.navigate('OTP', {
-          code: data.otp,
-          phone: data.phone,
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        startTransition(() => {
+          getUserProfile(data?.data);
         });
+        return;
       }
+      Alert.alert('Error', data.message);
+      return;
+    },
+    onError(error) {
+      Alert.alert('Erreur', error.message);
+      return;
     },
   });
 
-  const onSubmit = (data: Inputs) => {
-    mutation.mutate({otp: data.otp});
-  };
+  const onSubmit = (text: Inputs) => mutation.mutate({otp: text.otp});
+
+  const resendCode = async () => await getOTP();
 
   return (
     <FormProvider {...methods}>
@@ -99,7 +104,7 @@ const OTP = ({route}) => {
           name="otp"
         />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={resendCode}>
           <Text style={styles.signupButton}>Renvoyez le code</Text>
         </TouchableOpacity>
         <TouchableOpacity

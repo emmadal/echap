@@ -1,13 +1,12 @@
 export interface IUser {
   name: string;
-  city: string;
-  cityId: number;
+  biography?: string;
   premium: boolean;
   phone: string;
-  bio?: string;
-  whatsapp?: string;
-  email?: string;
+  country_id: number;
+  city_id: number;
   photo?: string;
+  whatsapp?: string;
   tiktok?: string;
   instagram?: string;
 }

@@ -1,4 +1,6 @@
 {
-    "categories": "http://192.168.1.8:8080/categories",
-    "login": "http://192.168.1.8:8080/login"
+    "categories": "http://192.168.1.3:8080/categories",
+    "login": "http://192.168.1.3:8080/login",
+    "otp": "http://192.168.1.3:8080/otp",
+    "verification": "http://192.168.1.3:8080/otp-verification"
 }

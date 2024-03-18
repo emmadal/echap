@@ -3,12 +3,11 @@ import {IState} from 'types/state';
 export const initialState: IState = {
   user: {
     name: '',
-    city: '',
-    cityId: 0,
+    city_id: 0,
+    country_id: 0,
     phone: '',
     premium: false,
-    bio: '',
-    email: '',
+    biography: '',
     photo: '',
     whatsapp: '',
     tiktok: '',

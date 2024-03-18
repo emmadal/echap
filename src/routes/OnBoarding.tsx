@@ -53,7 +53,7 @@ const OnBoarding = () => {
             borderBottomColor: 'transparent',
             borderBottomWidth: 0,
           },
-          headerBackImage: () => (<BackIcon />) as React.ReactNode,
+          headerBackImage: () => null,
         }}
       />
     </Stack.Navigator>
