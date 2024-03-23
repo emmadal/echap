@@ -13,6 +13,6 @@ export const initialState: IState = {
     tiktok: '',
     instagram: '',
   },
-  category: 0,
+  category: 1,
   logout: true,
 };
