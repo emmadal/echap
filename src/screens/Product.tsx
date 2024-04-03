@@ -6,7 +6,7 @@ import Divider from 'components/divider';
 import ContactButton from 'components/contact-button';
 import ChatButton from 'components/chat-button';
 import {useStore} from 'store';
-import MetaTag from 'components/meta-tag';
+import MetaTag from 'components/MetaTag';
 
 const Product = ({route}: any) => {
   const premium = useStore(state => state.user.premium);
@@ -20,8 +20,8 @@ const Product = ({route}: any) => {
       <View style={styles.info}>
         <Text style={styles.title}>{route?.params?.title}</Text>
         <MetaTag
-          author={route?.params?.author}
-          date={route?.params?.createdAt}
+          price={route?.params?.price}
+          date={route?.params?.created_at}
         />
         <Text style={styles.description}>{route?.params?.description}</Text>
       </View>

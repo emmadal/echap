@@ -1,14 +1,14 @@
 export interface IPost {
-  id?: string;
+  id?: number;
   title: string;
   price: number;
-  authorId: string;
-  author?: string;
-  createdAt?: string;
-  categoryId: string;
+  author_id: number;
+  category_id: number;
+  country_id: number;
+  city_id: number;
   banner: string;
   description: string;
   phone: string;
-  whatsapp?: string;
   photos: string[];
+  created_at?: string;
 }

@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useMemo, useState} from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import {
   FlatList,
   RefreshControl,
@@ -6,11 +6,11 @@ import {
   Text,
   Image,
   View,
+  ActivityIndicator,
 } from 'react-native';
-import {posts} from 'constants/posts';
-import ProductItem from 'components/product-item';
-import {useStore} from 'store';
+import ProductItem from 'components/ProductItem';
 import colors from 'themes/colors';
+import useArticle from 'hooks/useArticle';
 
 const wait = (timeout: number) => {
   return new Promise((resolve: any) => setTimeout(resolve, timeout));
@@ -27,24 +27,8 @@ const EmptyProduct = () => (
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
 const ProductListing = ({search}: {search: string}) => {
-  // Get the categoryId from global state
-  const categoryId = useStore(state => state.category);
+  const {data, isError, isPending, error} = useArticle();
   const [refreshing, setRefreshing] = useState(false);
-
-  // return a memoized products array by categories or by name search
-  const products = useMemo(() => {
-    if (categoryId) {
-      const items = posts.filter(item => item.categoryId === categoryId);
-      if (search) {
-        const data = items.filter(i =>
-          i.title.toLowerCase().includes(search.toLowerCase()),
-        );
-        return data;
-      }
-      return items;
-    }
-    return [];
-  }, [categoryId, search]);
 
   // function which trigger the pull refresh
   const onRefresh = useCallback(async () => {
@@ -53,22 +37,38 @@ const ProductListing = ({search}: {search: string}) => {
       wait(2000).then(() => {
         setRefreshing(false);
       });
-    } catch (error) {
+    } catch (err) {
       setRefreshing(false);
     }
   }, []);
 
+  if (isPending) {
+    return <ActivityIndicator color={colors.primary} size="large" />;
+  }
+
+  if (isError) {
+    return <Text>{error?.message}</Text>;
+  }
+
+  const filterData = () => {
+    const results = data?.filter(i =>
+      i.title.toLowerCase().includes(search.toLowerCase()),
+    );
+    return results || data;
+  };
+
   return (
     <FlatList
-      data={products}
+      data={filterData() || []}
       ItemSeparatorComponent={ItemSeparator}
+      style={styles.container}
       horizontal={false}
       columnWrapperStyle={styles.columnWrapperStyle}
       contentContainerStyle={styles.contentContainerStyle}
       numColumns={2}
       showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
-      keyExtractor={item => item?.id as string}
+      keyExtractor={item => String(item?.id)}
       renderItem={({item}) => <ProductItem item={item} />}
       ListEmptyComponent={<EmptyProduct />}
       refreshing={true}

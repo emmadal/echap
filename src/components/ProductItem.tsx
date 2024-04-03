@@ -4,7 +4,7 @@ import {Text, Image, Pressable, StyleSheet} from 'react-native';
 import {IPost} from 'types/post';
 
 const ProductItem = ({item}: {item: IPost}) => {
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   return (
     <Pressable
       style={styles.card}
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
   image: {
     resizeMode: 'cover',
     justifyContent: 'center',
-    height: '100%',
+    height: 250,
+    maxHeight: 300,
     borderRadius: 5,
   },
   card: {

@@ -5,13 +5,15 @@ import colors from 'themes/colors';
 
 type Props = {
   date: string;
-  author: string;
+  price: number;
 };
-const MetaTag: FC<Props> = ({date, author}) => {
+const MetaTag: FC<Props> = ({date, price}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{moment(date).locale('fr').fromNow()}</Text>
-      <Text style={styles.text}>Crée par {author}</Text>
+      <Text style={styles.text}>
+        Publié {moment(date).locale('fr').fromNow()}
+      </Text>
+      <Text style={styles.price}>{price} FCFA</Text>
     </View>
   );
 };
@@ -29,6 +31,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 14,
     color: colors.gray.main,
+  },
+  price: {
+    fontWeight: '800',
+    fontSize: 16,
+    color: colors.primary,
   },
 });
 

@@ -1,6 +1,7 @@
-import {ICategory} from 'types/category';
 import * as Keychain from 'react-native-keychain';
 import url from './url.json';
+import {ICategory} from 'types/category';
+import {IPost} from 'types/post';
 
 export const getCategories = async (): Promise<ICategory[]> => {
   const req = await fetch(url.categories, {
@@ -57,4 +58,17 @@ export const verificationOTP = async (code: string) => {
   } catch (error) {
     throw new Error('Unable to verify code');
   }
+};
+
+export const getArticles = async (category_id: number): Promise<IPost[]> => {
+  const token = await Keychain.getGenericPassword();
+  const req = await fetch(`${url.article}/${category_id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: (token && token?.password) as string,
+    },
+  });
+  const response = await req.json();
+  return response?.data || [];
 };

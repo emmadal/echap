@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import CategoryListing from 'components/category-list';
-import ProductListing from 'components/product-list';
+import ProductListing from 'components/ProductList';
 import SearchBar from 'components/search-bar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: Platform.OS === 'ios' ? 40 : 25,
     backgroundColor: colors.white,
+    padding: 10,
   },
   inputView: {
     flexDirection: 'row',
