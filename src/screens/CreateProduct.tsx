@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -10,128 +10,180 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
-  Dimensions,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {Formik} from 'formik';
-import * as yup from 'yup';
 import colors from 'themes/colors';
-import {PHOTO_SIZE_MAX, PREMIUM_PHOTO_SIZE_MAX} from 'constants/size';
-import {requestMediaPermission} from 'utils/permissions';
-import {phoneNumber} from 'utils/regex';
+import {PHOTO_SIZE_MAX} from 'constants/size';
 import {useStore} from 'store';
 import Icon from 'react-native-vector-icons/Feather';
 import Dropdown from 'components/dropdown';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
-import {getCategories} from 'api';
+import {createArticle, uploadFile} from 'api';
+import requestMediaPermission from 'utils/permissions';
+import {pickPhoto} from 'utils/pickPhoto';
+import useCategory from 'hooks/useCategory';
+import {useNavigation} from '@react-navigation/native';
+import {z} from 'zod';
+import {productSchema} from 'utils/schema';
+import {useForm, Controller} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+
+type Inputs = z.infer<typeof productSchema>;
 
 const CreateProduct = () => {
+  const {data, isPending, isError, error} = useCategory();
+  const user = useStore(state => state.user);
+  const categoryID = useStore(state => state.category);
   const [visible, setVisible] = useState(false);
-  const [otherVisible, setOtherVisible] = useState(false);
-  const [categories, setCategories] = useState<any>([]);
-  const imageBanner = useRef('');
+  const [visibleOther, setVisibleOther] = useState(false);
+  const [banner, setBanner] = useState('');
+  const navigation = useNavigation();
+  const queryClient = useQueryClient();
   let richText = useRef(null);
   const premium = useStore(state => state.user.premium);
-  const imageURL = useRef(null);
 
-  // choose local media to upload the banner
-  const uploadBanner = useCallback(async () => {
-    const permission = await requestMediaPermission();
-    if (permission === 'granted') {
-      // launch photo library on devices to choose a file
-      const result = await launchImageLibrary({
-        mediaType: 'photo',
-        selectionLimit: 1,
-      });
-      if (result?.assets?.length) {
-        const fileSize = result.assets[0].fileSize ?? 0;
-        if (!premium && fileSize >= PHOTO_SIZE_MAX) {
-          Alert.alert(
-            'Fichier volumineux',
-            "Passez à l'offre premium pour télécharger les fichiers volumineux",
-          );
-          return;
-        }
-        if (premium && fileSize <= PREMIUM_PHOTO_SIZE_MAX) {
-          // upload photo here
-          setVisible(!visible);
-          const formData = new FormData();
-          formData.append('file', {
-            name: result?.assets[0].fileName,
-            uri: result?.assets[0].uri,
-            type: result?.assets[0].type,
-          });
-        }
+  const {
+    reset,
+    handleSubmit,
+    watch,
+    control,
+    setValue,
+    formState: {errors, isSubmitting, isLoading},
+  } = useForm<Inputs>({
+    resolver: zodResolver(productSchema),
+    mode: 'onChange',
+  });
+
+  const handleCategories = useMemo(() => {
+    const cats = [];
+    if (data && data.length) {
+      for (const i of data) {
+        cats.push({id: String(i.id), label: i.title, value: String(i.id)});
       }
+      return cats;
     }
-  }, [premium, visible]);
+    return [];
+  }, [data]);
 
-  const uploadOthersImage = useCallback(
-    async (limit: number) => {
-      const permission = await requestMediaPermission();
-      if (permission === 'granted') {
-        // launch photo library on devices to choose a file
-        const result = await launchImageLibrary({
-          mediaType: 'photo',
-          selectionLimit: limit,
-        });
-        if (result?.assets?.length) {
-          const fileSize = result.assets[0].fileSize ?? 0;
-          if (!premium && fileSize >= PHOTO_SIZE_MAX) {
-            Alert.alert(
-              'Fichier volumineux',
-              "Passez à l'offre premium pour télécharger les fichiers volumineux",
-            );
-            return;
-          }
-          if (premium && fileSize >= PREMIUM_PHOTO_SIZE_MAX) {
-            Alert.alert(
-              'Fichier volumineux',
-              'Veuillez choisir un fichier en dessous de 20MB',
-            );
-          }
-          setOtherVisible(!otherVisible);
-        }
-      }
-    },
-    [otherVisible, premium],
-  );
+  const processForm = async (article: Inputs) => {
+    const obj = {
+      ...article,
+      city_id: user.city_id,
+      price: Number(article?.price),
+      country_id: user.country_id,
+      author_id: user?.id!,
+    };
+    const req = await createArticle(obj);
+    return req;
+  };
 
-  const othersPicture = useCallback(async () => {
-    if (!premium) {
+  // send data to the server
+  const {mutate, isPending: pending} = useMutation({
+    mutationFn: async values => await processForm(values),
+    onSuccess: response => {
+      queryClient.invalidateQueries({
+        queryKey: ['articles', categoryID],
+        refetchType: 'active',
+      });
+      reset();
+      setValue('description', 'Entrez la description ici...');
       Alert.alert(
-        "Insertion d'images",
-        "Vous avez droit à une seule image. Passez à l'option premium pour avoir plus d'avantages",
+        "Création d'article",
+        response.message,
         [
           {
-            text: 'Annuler',
-            style: 'destructive',
-          },
-          {
-            text: 'Télecharger',
-            onPress: async () => await uploadOthersImage(1),
+            text: 'OK',
+            onPress: () => navigation.goBack(),
           },
         ],
         {cancelable: false},
       );
+    },
+    onError: err => {
+      Alert.alert('Erreur', err.message);
+      return;
+    },
+  });
+
+  if (isPending) {
+    return <ActivityIndicator color={colors.primary} size="large" />;
+  }
+
+  if (isError) {
+    return <Text>{error?.message}</Text>;
+  }
+
+  // choose local media to upload the banner
+  const uploadBanner = async () => {
+    const granted = await requestMediaPermission();
+    if (granted) {
+      // launch photo library on devices to choose a file
+      const result = await pickPhoto(1);
+      if (result?.assets?.length) {
+        const fileSize = result.assets[0].fileSize ?? 0;
+        if (fileSize >= PHOTO_SIZE_MAX) {
+          Alert.alert(
+            'Fichier volumineux',
+            'Veuillez choisir une image en dessous de 10MB',
+          );
+          return;
+        }
+
+        // upload photo here
+        setVisible(!visible);
+        const formData = new FormData();
+        formData.append('file', {
+          name: result?.assets[0].fileName,
+          uri: result?.assets[0].uri,
+          type: result?.assets[0].type,
+        });
+        const res = await uploadFile(formData);
+        if (res?.success) {
+          setVisible(false);
+          setBanner(result?.assets[0].fileName!);
+          setValue('banner', res?.data);
+        }
+        setVisible(false);
+      }
       return;
     }
-    await uploadOthersImage(10);
-  }, [premium, uploadOthersImage]);
+    return;
+  };
 
-  const handleCategories = useCallback(async () => {
-    const data: any = [];
-    const req = await getCategories();
-    req.map(c =>
-      data.push({id: String(c.id), label: c.title, value: String(c.id)}),
-    );
-    setCategories(data);
-  }, []);
-
-  useEffect(() => {
-    handleCategories();
-  }, []);
+  // choose local media to upload others files
+  const uploadOthersImage = async () => {
+    const results = [];
+    const granted = await requestMediaPermission();
+    const limit = premium ? 7 : 1;
+    if (granted) {
+      // launch photo library on devices to choose a file
+      const result = await pickPhoto(limit);
+      if (result.assets?.length) {
+        setVisibleOther(!visibleOther);
+        for (const file of result.assets) {
+          if (file?.fileSize! > PHOTO_SIZE_MAX) {
+            Alert.alert(
+              'Fichier volumineux',
+              'Veuillez choisir une image en dessous de 10MB',
+            );
+            return;
+          }
+          const formData = new FormData();
+          formData.append('file', {
+            name: file?.fileName,
+            uri: file?.uri,
+            type: file?.type,
+          });
+          const res = await uploadFile(formData);
+          results.push(res?.data);
+        }
+        setVisibleOther(false);
+        setValue('photos', results);
+      }
+      return;
+    }
+    return;
+  };
 
   return (
     <KeyboardAvoidingView
@@ -142,158 +194,25 @@ const CreateProduct = () => {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.contentScroll}>
-        <Formik
-          initialValues={{
-            title: '',
-            description: '',
-            categoryId: '',
-            phone: '',
-            price: '',
-          }}
-          validationSchema={yup.object().shape({
-            title: yup
-              .string()
-              .min(10, 'Minimum 10 caractères')
-              .max(30, 'Max 30 caractères')
-              .required('Entrez le titre'),
-            categoryId: yup.string().required('Choisissez la catégorie'),
-            price: yup
-              .string()
-              .min(2, 'Prix min 500')
-              .required('Entrez le prix'),
-            description: yup
-              .string()
-              .min(5, 'Minimum 10 caractères')
-              .required('Entrez la description'),
-            phone: yup
-              .string().matches(phoneNumber, 'Entrez un contact valide')
-              .required('Entrez votre contact'),
-          })}
-          onSubmit={values => {
-            console.log(values);
-          }}>
-          {({
-            handleChange,
-            handleBlur,
-            values,
-            handleSubmit,
-            setFieldValue,
-            touched,
-            errors,
-          }) => (
-            <View>
+        <View style={styles.viewInput}>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            name="banner"
+            render={({field: {onBlur}}) => (
               <TouchableOpacity
                 onPress={uploadBanner}
+                onBlur={onBlur}
+                disabled={visible}
                 style={styles.uploadZone}>
-                {imageBanner.current?.length > 0 ? (
-                  <>
-                    <Image
-                      source={{uri: imageURL.current}}
-                      style={styles.img}
-                    />
-                    <Text>Resume</Text>
-                  </>
+                {watch('banner')?.length ?? 0 ? (
+                  <Text>{banner}</Text>
                 ) : (
                   <>
                     <Icon size={30} name="image" color={colors.text} />
                     <Text>Sélectionnez l'image principale</Text>
                   </>
                 )}
-              </TouchableOpacity>
-              {visible ? (
-                <ActivityIndicator
-                  style={styles.progress}
-                  animating={true}
-                  size="small"
-                  color={colors.primary}
-                />
-              ) : null}
-
-              <View style={styles.viewInput}>
-                <Text style={styles.label}>Titre</Text>
-                <TextInput
-                  placeholder="Titre"
-                  value={values.title}
-                  autoCapitalize="none"
-                  placeholderTextColor={colors.gray.main}
-                  onChangeText={handleChange('title')}
-                  onBlur={handleBlur('title')}
-                  style={styles.input}
-                  maxLength={30}
-                  underlineColorAndroid="transparent"
-                  selectionColor={colors.primary}
-                />
-                {errors.title && touched.title && (
-                  <Text style={styles.error}>{errors.title}</Text>
-                )}
-              </View>
-              <View style={styles.viewInput}>
-                <Text style={styles.label}>Prix</Text>
-                <TextInput
-                  placeholder="Prix"
-                  value={values.price}
-                  autoCapitalize="none"
-                  placeholderTextColor={colors.gray.main}
-                  onChangeText={handleChange('price')}
-                  onBlur={handleBlur('price')}
-                  style={styles.input}
-                  keyboardType="numeric"
-                  inputMode="numeric"
-                  selectionColor={colors.primary}
-                  underlineColorAndroid="transparent"
-                />
-                {errors.price && touched.price && (
-                  <Text style={styles.error}>{errors.price}</Text>
-                )}
-              </View>
-              <View style={styles.viewInput}>
-                <Text style={styles.label}>Contact</Text>
-                <TextInput
-                  placeholder="Contact"
-                  value={values.phone}
-                  autoCapitalize="none"
-                  placeholderTextColor={colors.gray.main}
-                  onChangeText={handleChange('phone')}
-                  onBlur={handleBlur('phone')}
-                  style={styles.input}
-                  keyboardType="phone-pad"
-                  inputMode="tel"
-                  selectionColor={colors.primary}
-                  underlineColorAndroid="transparent"
-                />
-                {errors.phone && touched.phone && (
-                  <Text style={styles.error}>{errors.phone}</Text>
-                )}
-              </View>
-              <View style={styles.viewInput}>
-                <Text style={styles.label}>Catégorie</Text>
-                <Dropdown
-                  categories={categories}
-                  setFieldValue={setFieldValue}
-                />
-                {errors.categoryId && touched.categoryId && (
-                  <Text style={styles.error}>{errors.categoryId}</Text>
-                )}
-              </View>
-              <View>
-                <TouchableOpacity
-                  onPress={othersPicture}
-                  style={styles.uploadZone}>
-                  {imageURL?.current?.length > 0 ? (
-                    <>
-                      <Image
-                        source={{uri: imageURL.current}}
-                        style={styles.img}
-                      />
-                      <Text>Resume</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Icon size={30} name="image" color={colors.text} />
-                      <Text>Sélectionnez d'autres images</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
                 {visible ? (
                   <ActivityIndicator
                     style={styles.progress}
@@ -302,42 +221,156 @@ const CreateProduct = () => {
                     color={colors.primary}
                   />
                 ) : null}
-              </View>
-              <View style={[styles.viewInput, styles.editorText]}>
-                <Text style={styles.label}>Description de l'article</Text>
-                <RichEditor
-                  ref={richText}
-                  androidHardwareAccelerationDisabled={true}
-                  onChange={htmlText => setFieldValue('description', htmlText)}
-                  style={styles.richTextEditorStyle}
-                  initialHeight={150}
-                  initialContentHTML={'<br/>'}
-                />
-                <RichToolbar
-                  editor={richText}
-                  actions={[
-                    actions.setBold,
-                    actions.setItalic,
-                    actions.setUnderline,
-                    actions.insertLink,
-                    actions.insertBulletsList,
-                    actions.insertOrderedList,
-                  ]}
-                />
-                {errors.description && (
-                  <Text style={[styles.error, {color: colors.error}]}>
-                    {errors.description}
-                  </Text>
-                )}
-              </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleSubmit()}>
-                <Text style={styles.textButton}>Créer l'article</Text>
               </TouchableOpacity>
-            </View>
+            )}
+          />
+          <Text style={styles.error}>{errors?.banner?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            name="title"
+            render={({field: {onBlur, onChange, value}}) => (
+              <TextInput
+                placeholder="Titre"
+                value={value}
+                autoCapitalize="none"
+                placeholderTextColor={colors.text}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                style={styles.input}
+                maxLength={200}
+                underlineColorAndroid="transparent"
+                selectionColor={colors.primary}
+              />
+            )}
+          />
+          <Text style={styles.error}>{errors?.title?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            name="price"
+            render={({field: {onBlur, onChange, value}}) => (
+              <TextInput
+                placeholder="Prix"
+                value={value}
+                autoCapitalize="none"
+                placeholderTextColor={colors.text}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                style={styles.input}
+                maxLength={200}
+                underlineColorAndroid="transparent"
+                selectionColor={colors.primary}
+              />
+            )}
+          />
+          <Text style={styles.error}>{errors?.price?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            name="phone"
+            render={({field: {onBlur, onChange, value}}) => (
+              <TextInput
+                placeholder="Numéro de téléphone"
+                value={value}
+                autoCapitalize="none"
+                placeholderTextColor={colors.text}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+                selectionColor={colors.primary}
+              />
+            )}
+          />
+          <Text style={styles.error}>{errors?.phone?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <Dropdown categories={handleCategories} setValue={setValue} />
+          <Text style={styles.error}>{errors?.category_id?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <Controller
+            control={control}
+            rules={{required: true}}
+            name="photos"
+            render={({field: {onBlur}}) => (
+              <TouchableOpacity
+                onPress={uploadOthersImage}
+                onBlur={onBlur}
+                disabled={visibleOther}
+                style={styles.uploadZone}>
+                {watch('photos')?.length ?? 0 ? (
+                  <Text style={styles.placeholder}>
+                    {watch('photos')?.length ?? 0} images téléchargées
+                  </Text>
+                ) : (
+                  <>
+                    <Icon size={30} name="image" color={colors.text} />
+                    <Text style={styles.placeholder}>
+                      Sélectionnez d'autres images
+                    </Text>
+                  </>
+                )}
+                {visibleOther ? (
+                  <ActivityIndicator
+                    style={styles.progress}
+                    animating={true}
+                    size="small"
+                    color={colors.primary}
+                  />
+                ) : null}
+              </TouchableOpacity>
+            )}
+          />
+          <Text style={styles.error}>{errors.photos?.message}</Text>
+        </View>
+        <View style={styles.viewInput}>
+          <RichEditor
+            ref={richText}
+            androidHardwareAccelerationDisabled={true}
+            onChange={htmlText => setValue('description', htmlText)}
+            style={styles.richTextEditorStyle}
+            initialHeight={150}
+            initialContentHTML={'Entrez la description ici...'}
+          />
+          <RichToolbar
+            editor={richText}
+            actions={[
+              actions.setBold,
+              actions.setItalic,
+              actions.setUnderline,
+              actions.insertLink,
+              actions.insertBulletsList,
+              actions.insertOrderedList,
+              actions.fontSize,
+              actions.table,
+              actions.indent,
+              actions.alignFull,
+            ]}
+          />
+          <Text style={styles.error}>{errors?.description?.message}</Text>
+        </View>
+        <TouchableOpacity
+          disabled={pending || isLoading || isSubmitting}
+          style={styles.button}
+          onPress={handleSubmit(mutate)}>
+          {isSubmitting || isLoading || pending ? (
+            <ActivityIndicator
+              animating={isSubmitting || isLoading}
+              color={colors.primary}
+              size="large"
+            />
+          ) : (
+            <Text style={styles.textButton}>Créer l'article</Text>
           )}
-        </Formik>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -348,6 +381,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     paddingBottom: 100,
+    paddingHorizontal: 5,
   },
   keyboard: {flex: 1},
   contentScroll: {
@@ -357,9 +391,6 @@ const styles = StyleSheet.create({
   },
   viewInput: {
     marginVertical: 13,
-  },
-  richeEditor: {
-    marginTop: 20,
   },
   text: {
     fontWeight: '500',
@@ -375,7 +406,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.error,
-    marginTop: 5,
+    marginTop: 2,
   },
   input: {
     backgroundColor: colors.gray.light,
@@ -385,11 +416,8 @@ const styles = StyleSheet.create({
     borderColor: colors.dark,
     borderWidth: 0.5,
     borderRadius: 2,
-  },
-  label: {
-    fontWeight: '500',
+    textAlign: 'auto',
     fontSize: 15,
-    marginVertical: 3,
   },
   progress: {
     marginTop: 10,
@@ -419,8 +447,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: 'rgba(0, 0, 0, 0.5)',
-    width: Dimensions.get('window').width / 2,
-    alignSelf: 'center',
     height: 55,
     marginTop: 20,
     marginBottom: 100,
@@ -437,8 +463,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 17,
   },
-  editorText: {
-    marginTop: 20,
+  placeholder: {
+    color: colors.text,
   },
 });
 

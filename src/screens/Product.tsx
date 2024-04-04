@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, Text, ScrollView, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import colors from 'themes/colors';
 import Slide from 'components/silde';
 import Divider from 'components/divider';
@@ -7,9 +13,27 @@ import ContactButton from 'components/contact-button';
 import ChatButton from 'components/chat-button';
 import {useStore} from 'store';
 import MetaTag from 'components/MetaTag';
+import RenderHtml from 'react-native-render-html';
+
+const tagsStyles = {
+  body: {
+    whiteSpace: 'normal',
+    color: colors.text,
+    fontSize: 17,
+    lineHeight: 24,
+    marginTop: 15,
+    textAlign: 'justify',
+  },
+};
+const renderersProps = {
+  img: {
+    enableExperimentalPercentWidth: true,
+  },
+};
 
 const Product = ({route}: any) => {
   const premium = useStore(state => state.user.premium);
+  const {width} = useWindowDimensions();
   return (
     <ScrollView
       style={styles.container}
@@ -23,7 +47,15 @@ const Product = ({route}: any) => {
           price={route?.params?.price}
           date={route?.params?.created_at}
         />
-        <Text style={styles.description}>{route?.params?.description}</Text>
+        <RenderHtml
+          contentWidth={width}
+          source={{
+            html: `${route?.params?.description}`,
+          }}
+          renderersProps={renderersProps}
+          tagsStyles={tagsStyles}
+          ignoredDomTags={['font', 'textDecoration']}
+        />
       </View>
       <Divider />
       <View style={styles.button}>

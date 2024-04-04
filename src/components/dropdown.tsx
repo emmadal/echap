@@ -10,10 +10,10 @@ const ChevronDown = () => (
 
 type Props = {
   categories: any[];
-  setFieldValue: any;
+  setValue: any;
 };
 
-const Dropdown: FC<Props> = ({categories, setFieldValue}) => {
+const Dropdown: FC<Props> = ({categories, setValue}) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const placeholder = {
     label: 'Selectionnez une catégorie',
@@ -27,7 +27,7 @@ const Dropdown: FC<Props> = ({categories, setFieldValue}) => {
         items={categories}
         doneText="Choisir"
         onValueChange={text => {
-          setFieldValue('categoryId', text);
+          setValue('category_id', Number(text));
           setSelectedValue(text);
         }}
         value={selectedValue}
@@ -35,9 +35,10 @@ const Dropdown: FC<Props> = ({categories, setFieldValue}) => {
           underlineColorAndroid: 'transparent',
           autoCapitalize: 'none',
           selectionColor: colors.primary,
+          placeholderTextColor: colors.text,
         }}
         useNativeAndroidPickerStyle={false}
-        Icon={() => <ChevronDown />}
+        Icon={() => (<ChevronDown />) as React.ReactNode}
         style={{
           ...pickerSelectStyles,
           iconContainer: {
@@ -49,52 +50,55 @@ const Dropdown: FC<Props> = ({categories, setFieldValue}) => {
     </View>
   );
 };
-// allowAsProps
+
 const styles = StyleSheet.create({
   viewInput: {
     flex: 1,
   },
   inputIOS: {
-    fontSize: 16,
+    fontSize: 15,
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 4,
-    color: 'black',
+    color: colors.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
   inputAndroid: {
-    fontSize: 16,
+    fontSize: 15,
+    paddingVertical: 12,
     paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: colors.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 16,
+    fontSize: 15,
     paddingVertical: 12,
     paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: colors.gray.main,
+    textAlign: 'auto',
+    borderWidth: 0.6,
+    borderColor: colors.text,
     backgroundColor: colors.gray.light,
     borderRadius: 2,
     color: colors.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
   inputAndroid: {
-    fontSize: 16,
+    fontSize: 15,
+    paddingVertical: 12,
     paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
+    textAlign: 'auto',
+    borderWidth: 0.6,
+    borderColor: colors.text,
+    backgroundColor: colors.gray.light,
+    borderRadius: 2,
+    color: colors.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
