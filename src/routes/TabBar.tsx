@@ -13,6 +13,7 @@ import colors from 'themes/colors';
 import CreateProduct from 'screens/CreateProduct';
 import Profile from 'screens/Profile';
 import Avatar from 'components/Avatar';
+import {useStore} from 'store';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +38,7 @@ const TabIcon = memo(({focused, icon}: TabIconProps) => (
 
 const TabBar = () => {
   const {height} = useWindowDimensions();
+  const user = useStore(state => state.user);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -108,14 +110,18 @@ const TabBar = () => {
         name="Profile"
         component={Profile}
         options={{
-          headerTitle: () => (
-            <Pressable style={styles.imgContainer}>
-              <Avatar
-                source="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg"
-                size={100}
-              />
-            </Pressable>
-          ),
+          headerTitle: () =>
+            (
+              <Pressable style={styles.imgContainer}>
+                {user?.photo ? (
+                  <Avatar source={user?.photo} size={100} />
+                ) : (
+                  <View style={styles.iconImg}>
+                    <Icon name="picture" size={50} color={colors.text} />
+                  </View>
+                )}
+              </Pressable>
+            ) as React.ReactNode,
           headerStyle: {
             backgroundColor: colors.primary,
             height: height / 4.5,
@@ -169,6 +175,15 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
     borderRadius: 100,
     backgroundColor: colors.white,
+  },
+  iconImg: {
+    borderWidth: 2,
+    borderColor: colors.gray.main,
+    borderRadius: 50,
+    height: 100,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

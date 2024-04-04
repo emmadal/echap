@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   bio: {
-    textAlign: 'justify',
-    fontSize: 13,
+    fontSize: 15,
     color: colors.text,
     width: Dimensions.get('screen').width / 1.5,
     marginBottom: 15,
+    textAlign: 'center',
   },
   userInfo: {
     alignSelf: 'center',

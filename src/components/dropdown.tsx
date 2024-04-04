@@ -9,14 +9,16 @@ const ChevronDown = () => (
 );
 
 type Props = {
-  categories: any[];
+  data: any[];
   setValue: any;
+  placeholderText: string;
+  name: string;
 };
 
-const Dropdown: FC<Props> = ({categories, setValue}) => {
+const Dropdown: FC<Props> = ({data, setValue, placeholderText, name}) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const placeholder = {
-    label: 'Selectionnez une catégorie',
+    label: placeholderText,
     value: null,
   };
 
@@ -24,10 +26,10 @@ const Dropdown: FC<Props> = ({categories, setValue}) => {
     <View style={styles.viewInput}>
       <RNPickerSelect
         placeholder={placeholder}
-        items={categories}
+        items={data}
         doneText="Choisir"
         onValueChange={text => {
-          setValue('category_id', Number(text));
+          setValue(`${name}`, Number(text));
           setSelectedValue(text);
         }}
         value={selectedValue}

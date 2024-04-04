@@ -56,8 +56,8 @@ const CreateProduct = () => {
 
   const handleCategories = useMemo(() => {
     const cats = [];
-    if (data && data.length) {
-      for (const i of data) {
+    if (data && data?.data) {
+      for (const i of data?.data) {
         cats.push({id: String(i.id), label: i.title, value: String(i.id)});
       }
       return cats;
@@ -292,7 +292,12 @@ const CreateProduct = () => {
           <Text style={styles.error}>{errors?.phone?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Dropdown categories={handleCategories} setValue={setValue} />
+          <Dropdown
+            data={handleCategories}
+            setValue={setValue}
+            placeholderText="Sélectionnez une catégorie"
+            name="category_id"
+          />
           <Text style={styles.error}>{errors?.category_id?.message}</Text>
         </View>
         <View style={styles.viewInput}>

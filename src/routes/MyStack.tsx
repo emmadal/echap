@@ -5,6 +5,7 @@ import Product from 'screens/Product';
 import Icon from 'react-native-vector-icons/Feather';
 import {StyleSheet} from 'react-native';
 import colors from 'themes/colors';
+import EditProfile from 'screens/EditProfile';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,20 @@ const MyStack = () => {
         options={({route}: any) => ({
           headerBackTitleVisible: false,
           title: splitTitle(route?.params?.title),
+          headerTitleAlign: 'center',
+          headerStyle: {
+            borderBottomColor: 'transparent',
+            borderBottomWidth: 0,
+          },
+          headerBackImage: () => (<BackIcon />) as React.ReactNode,
+        })}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={({route}: any) => ({
+          headerBackTitleVisible: false,
+          title: 'Modifier mon profil',
           headerTitleAlign: 'center',
           headerStyle: {
             borderBottomColor: 'transparent',

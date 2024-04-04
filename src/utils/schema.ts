@@ -42,3 +42,47 @@ export const productSchema = z.object({
     })
     .min(1, "Choisissez d'autres images"),
 });
+
+export const userSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Champ obligatoire',
+    })
+    .min(5, 'Minimum 10 caractères')
+    .max(200, 'Maximum 200 caractères')
+    .trim(),
+  city_id: z.number({
+    required_error: 'Selectionnez votre ville',
+  }),
+  country_id: z.number({
+    required_error: 'Selectionnez votre pays',
+  }),
+  biography: z
+    .string({
+      required_error: 'Champ obligatoire',
+    })
+    .min(10, 'Minimum 10 caractères')
+    .max(250, 'Maximum 255 caractères')
+    .trim()
+    .optional(),
+  whatsapp: z
+    .string({
+      required_error: 'Contact whatsapp',
+    })
+    .regex(phoneRegex, 'Entrez un contact valide')
+    .optional()
+    .optional(),
+
+  instagram: z
+    .string({
+      required_error: 'Lien instagram',
+    })
+    .url()
+    .optional(),
+  tiktok: z
+    .string({
+      required_error: 'Lien Tiktok',
+    })
+    .url()
+    .optional(),
+});
