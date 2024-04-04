@@ -7,6 +7,7 @@ import {
   Image,
   View,
   ActivityIndicator,
+  SafeAreaView,
 } from 'react-native';
 import ProductItem from 'components/ProductItem';
 import colors from 'themes/colors';
@@ -42,46 +43,46 @@ const ProductListing = ({search}: {search: string}) => {
     }
   }, []);
 
-  if (isPending) {
-    return <ActivityIndicator color={colors.primary} size="large" />;
-  }
-
-  if (isError) {
-    return <Text>{error?.message}</Text>;
-  }
-
   const filterData = () => {
-    const results = data?.filter(i =>
+    const results = data?.data?.filter((i: {title: string}) =>
       i.title.toLowerCase().includes(search.toLowerCase()),
     );
-    return results || data;
+    return results || data?.data;
   };
 
   return (
-    <FlatList
-      data={filterData() || []}
-      ItemSeparatorComponent={ItemSeparator}
-      style={styles.container}
-      horizontal={false}
-      columnWrapperStyle={styles.columnWrapperStyle}
-      contentContainerStyle={styles.contentContainerStyle}
-      numColumns={2}
-      showsVerticalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="automatic"
-      keyExtractor={item => String(item?.id)}
-      renderItem={({item}) => <ProductItem item={item} />}
-      ListEmptyComponent={<EmptyProduct />}
-      refreshing={true}
-      refreshControl={
-        <RefreshControl
-          progressBackgroundColor={colors.white}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={[colors.gray.main]}
-          tintColor={colors.gray.main}
+    <SafeAreaView style={styles.container}>
+      {isPending ? (
+        <ActivityIndicator color={colors.primary} size="large" />
+      ) : isError ? (
+        <Text style={styles.error}>{error?.message}</Text>
+      ) : (
+        <FlatList
+          data={filterData() || []}
+          ItemSeparatorComponent={ItemSeparator}
+          style={styles.container}
+          horizontal={false}
+          columnWrapperStyle={styles.columnWrapperStyle}
+          contentContainerStyle={styles.contentContainerStyle}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          contentInsetAdjustmentBehavior="automatic"
+          keyExtractor={item => String(item?.id)}
+          renderItem={({item}) => <ProductItem item={item} />}
+          ListEmptyComponent={<EmptyProduct />}
+          refreshing={true}
+          refreshControl={
+            <RefreshControl
+              progressBackgroundColor={colors.white}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[colors.gray.main]}
+              tintColor={colors.gray.main}
+            />
+          }
         />
-      }
-    />
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -115,6 +116,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     justifyContent: 'center',
     marginBottom: -50,
+  },
+  error: {
+    color: colors.error,
+    fontSize: 15,
+    textAlign: 'center',
   },
 });
 

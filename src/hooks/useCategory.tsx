@@ -4,7 +4,7 @@ import {getCategories} from 'api';
 const useCategory = () => {
   const {data, isPending, error, isError} = useQuery({
     queryKey: ['categories'],
-    queryFn: getCategories,
+    queryFn: async () => await getCategories(),
   });
   return {data, isPending, error, isError};
 };

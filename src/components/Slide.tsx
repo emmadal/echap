@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {useSharedValue} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import {windowScaled} from 'utils/window';
-import {SlideItem} from 'components/slide-item';
+import {SlideItem} from 'components/SlideItem';
 
 const PAGE_WIDTH = windowScaled.width;
 

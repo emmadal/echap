@@ -1,36 +1,43 @@
 import * as Keychain from 'react-native-keychain';
-import url from './url.json';
-import {ICategory} from 'types/category';
 import {IPost} from 'types/post';
 import {IResponse} from 'types/response';
+import {API_URL} from '@env';
 
-export const getCategories = async (): Promise<ICategory[]> => {
-  const req = await fetch(url.categories, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const response = await req.json();
-  return response?.data;
+export const getCategories = async (): Promise<IResponse> => {
+  try {
+    const req = await fetch(`${API_URL}/categories`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to fetch categories');
+  }
 };
 
 export const login = async (phone: string) => {
-  const req = await fetch(url.login, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({phone}),
-  });
-  const response = await req.json();
-  return response;
+  try {
+    const req = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({phone}),
+    });
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to connect user');
+  }
 };
 
 export const getOTP = async () => {
   try {
     const token = await Keychain.getGenericPassword();
-    const req = await fetch(url.otp, {
+    const req = await fetch(`${API_URL}/otp`, {
       method: 'GET',
       headers: {
         Authorization: (token && token?.password) as string,
@@ -46,7 +53,7 @@ export const getOTP = async () => {
 export const verificationOTP = async (code: string) => {
   try {
     const token = await Keychain.getGenericPassword();
-    const req = await fetch(url.verification, {
+    const req = await fetch(`${API_URL}/otp-verification`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,23 +68,27 @@ export const verificationOTP = async (code: string) => {
   }
 };
 
-export const getArticles = async (category_id: number): Promise<IPost[]> => {
-  const token = await Keychain.getGenericPassword();
-  const req = await fetch(`${url.article}/${category_id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: (token && token?.password) as string,
-    },
-  });
-  const response = await req.json();
-  return response?.data || [];
+export const getArticles = async (category_id: number): Promise<IResponse> => {
+  try {
+    const token = await Keychain.getGenericPassword();
+    const req = await fetch(`${API_URL}/articles/${category_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: (token && token?.password) as string,
+      },
+    });
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to fetch articles');
+  }
 };
 
 export const uploadFile = async (file: FormData): Promise<IResponse> => {
   try {
     const token = await Keychain.getGenericPassword();
-    const req = await fetch(`${url.upload}`, {
+    const req = await fetch(`${API_URL}/upload`, {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -95,7 +106,7 @@ export const uploadFile = async (file: FormData): Promise<IResponse> => {
 export const createArticle = async (data: IPost): Promise<IResponse> => {
   try {
     const token = await Keychain.getGenericPassword();
-    const req = await fetch(`${url.new_article}`, {
+    const req = await fetch(`${API_URL}/article`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

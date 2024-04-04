@@ -7,9 +7,9 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import CategoryListing from 'components/category-list';
+import CategoryListing from 'components/CategoryListing';
 import ProductListing from 'components/ProductList';
-import SearchBar from 'components/search-bar';
+import SearchBar from 'components/SearchBar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {optionsFilter} from 'constants/options';

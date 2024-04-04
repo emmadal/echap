@@ -7,10 +7,10 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import colors from 'themes/colors';
-import Slide from 'components/silde';
-import Divider from 'components/divider';
-import ContactButton from 'components/contact-button';
-import ChatButton from 'components/chat-button';
+import Slide from 'components/Slide';
+import Divider from 'components/Divider';
+import ContactButton from 'components/ContactButton';
+import ChatButton from 'components/ChatButton';
 import {useStore} from 'store';
 import MetaTag from 'components/MetaTag';
 import RenderHtml from 'react-native-render-html';

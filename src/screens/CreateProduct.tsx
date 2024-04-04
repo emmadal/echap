@@ -15,7 +15,7 @@ import colors from 'themes/colors';
 import {PHOTO_SIZE_MAX} from 'constants/size';
 import {useStore} from 'store';
 import Icon from 'react-native-vector-icons/Feather';
-import Dropdown from 'components/dropdown';
+import Dropdown from 'components/Dropdown';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {createArticle, uploadFile} from 'api';
 import requestMediaPermission from 'utils/permissions';

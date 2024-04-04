@@ -12,7 +12,7 @@ import Home from 'screens/Home';
 import colors from 'themes/colors';
 import CreateProduct from 'screens/CreateProduct';
 import Profile from 'screens/Profile';
-import Avatar from 'components/avatar';
+import Avatar from 'components/Avatar';
 
 const Tab = createBottomTabNavigator();
 

@@ -34,7 +34,7 @@ const CategoryListing = (): React.JSX.Element => {
         <Text style={styles.error}>{error?.message}</Text>
       ) : (
         <FlatList
-          data={data || []}
+          data={data?.data || []}
           horizontal
           ItemSeparatorComponent={ItemSeparator}
           contentContainerStyle={styles.contentContainerStyle}

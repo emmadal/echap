@@ -21,6 +21,19 @@ module.exports = {
         },
       },
     ],
+    [
+      'module:react-native-dotenv',
+      {
+        envName: 'ECHAP_ENV',
+        moduleName: '@env',
+        path: '.env',
+        blocklist: null,
+        safe: true,
+        allowUndefined: false,
+        verbose: false,
+        allowlist: ['API_URL', 'API_SMS', 'API_OM', 'API_MTN', 'API_WAVE'],
+      },
+    ],
   ],
   env: {
     production: {
