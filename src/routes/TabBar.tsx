@@ -43,7 +43,7 @@ const TabBar = () => {
         tabBarHideOnKeyboard: true,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 55,
+          height: 47,
           position: 'absolute',
           backgroundColor: colors.primary,
           justifyContent: 'center',
@@ -51,7 +51,7 @@ const TabBar = () => {
           elevation: 5,
           left: 25,
           right: 25,
-          bottom: 30,
+          bottom: 25,
           borderRadius: 50,
           paddingBottom: 0,
         },
@@ -97,7 +97,7 @@ const TabBar = () => {
               <View style={styles.pluscircle}>
                 <Icon
                   name="pluscircleo"
-                  size={45}
+                  size={40}
                   color={focused ? colors.primary : colors.dark}
                 />
               </View>
@@ -119,8 +119,6 @@ const TabBar = () => {
           headerStyle: {
             backgroundColor: colors.primary,
             height: height / 4.5,
-            // borderBottomRightRadius: 200,
-            // borderBottomLeftRadius: 200,
             borderBottomEndRadius: 300,
           },
           headerBackgroundContainerStyle: {
@@ -158,8 +156,8 @@ const TabBar = () => {
 const styles = StyleSheet.create({
   pluscircle: {
     top: -20,
-    width: 45,
-    height: 45,
+    width: 40,
+    height: 40,
     borderRadius: 25,
     backgroundColor: colors.white,
   },

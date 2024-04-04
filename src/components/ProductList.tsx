@@ -7,7 +7,6 @@ import {
   Image,
   View,
   ActivityIndicator,
-  SafeAreaView,
 } from 'react-native';
 import ProductItem from 'components/ProductItem';
 import colors from 'themes/colors';
@@ -51,7 +50,7 @@ const ProductListing = ({search}: {search: string}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isPending ? (
         <ActivityIndicator color={colors.primary} size="large" />
       ) : isError ? (
@@ -82,14 +81,14 @@ const ProductListing = ({search}: {search: string}) => {
           }
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 15,
+    paddingBottom: 20,
   },
   columnWrapperStyle: {
     flexWrap: 'wrap',
