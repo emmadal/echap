@@ -211,3 +211,20 @@ export const getArticlesByUser = async (userId: number, offset: number) => {
     throw new Error('Unable to fetch articles');
   }
 };
+
+export const deleteArticle = async (articleId: number): Promise<IResponse> => {
+  try {
+    const token = await Keychain.getGenericPassword();
+    const req = await fetch(`${API_URL}/article/${articleId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: (token && token?.password) as string,
+      },
+    });
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to delete the article');
+  }
+};

@@ -130,8 +130,8 @@ const EditProfile = () => {
   // send data to the server
   const {mutate, isPending} = useMutation({
     mutationFn: async values => await processForm(values),
-    onSuccess: response => {
-      queryClient.invalidateQueries({
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({
         queryKey: ['user', user?.id],
       });
       startTransition(() => {

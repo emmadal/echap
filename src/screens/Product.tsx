@@ -14,6 +14,7 @@ import ChatButton from 'components/ChatButton';
 import {useStore} from 'store';
 import MetaTag from 'components/MetaTag';
 import RenderHtml from 'react-native-render-html';
+import DeleteArticleButton from 'components/DeleteArticle';
 
 const tagsStyles = {
   body: {
@@ -33,6 +34,7 @@ const renderersProps = {
 
 const Product = ({route}: any) => {
   const premium = useStore(state => state.user.premium);
+  const user = useStore(state => state.user);
   const {width} = useWindowDimensions();
   return (
     <ScrollView
@@ -58,14 +60,21 @@ const Product = ({route}: any) => {
         />
       </View>
       <Divider />
-      <View style={styles.button}>
-        <ContactButton phone={route?.params?.phone} />
-        <ChatButton
-          title={route?.params?.title}
-          image={route?.params.image}
-          premium={premium}
-        />
-      </View>
+      {user?.id !== route?.params?.author_id ? (
+        <View style={styles.button}>
+          <ContactButton phone={route?.params?.phone} />
+          <ChatButton
+            title={route?.params?.title}
+            image={route?.params.image}
+            premium={premium}
+          />
+        </View>
+      ) : null}
+      {user?.id === route?.params?.author_id ? (
+        <View style={styles.delete}>
+          <DeleteArticleButton articleId={route?.params?.id} />
+        </View>
+      ) : null}
     </ScrollView>
   );
 };
@@ -99,6 +108,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     justifyContent: 'space-around',
+  },
+  delete: {
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });
 

@@ -80,10 +80,9 @@ const CreateProduct = () => {
   // send data to the server
   const {mutate, isPending: pending} = useMutation({
     mutationFn: async values => await processForm(values),
-    onSuccess: response => {
-      queryClient.invalidateQueries({
+    onSuccess: async response => {
+      await queryClient.invalidateQueries({
         queryKey: ['articles', categoryID],
-        refetchType: 'active',
       });
       reset();
       setValue('description', 'Entrez la description ici...');
