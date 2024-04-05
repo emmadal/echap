@@ -38,7 +38,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'oblack' do
+target 'echap' do
   config = use_native_modules!
 
   use_react_native!(
@@ -55,7 +55,7 @@ target 'oblack' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
-  target 'oblackTests' do
+  target 'echapTests' do
     inherit! :complete
     # Pods for testing
   end

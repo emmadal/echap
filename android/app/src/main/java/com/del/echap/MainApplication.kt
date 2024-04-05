@@ -1,4 +1,4 @@
-package com.oblack
+package com.del.echap
 
 import android.app.Application
 import com.facebook.react.PackageList
