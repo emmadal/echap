@@ -5,7 +5,7 @@ import {
   View,
   Text,
   Dimensions,
-  ScrollView,
+  Animated,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -26,41 +26,33 @@ const Profile = () => {
   const onDismissSnackBar = () => setVisible(false);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.contentContainerStyle}>
-        <View style={styles.userInfo}>
-          <View style={styles.edit}>
-            <Text style={styles.name}>{user.name}</Text>
-            {user?.premium ? (
-              <TouchableOpacity onPress={handleVisible}>
-                <PremiumSvg fill="rgb(249 115 22)" height={23} width={23} />
-              </TouchableOpacity>
-            ) : null}
-
-            <TouchableOpacity
-              style={styles.editIcon}
-              onPress={handleEditProfile}>
-              <Icon name="edit" size={23} color={colors.text} />
+    <Animated.View style={styles.container}>
+      <View style={styles.userInfo}>
+        <View style={styles.edit}>
+          <Text style={styles.name}>{user.name}</Text>
+          {user?.premium ? (
+            <TouchableOpacity onPress={handleVisible}>
+              <PremiumSvg fill="rgb(249 115 22)" height={23} width={23} />
             </TouchableOpacity>
-          </View>
-          <Text style={styles.phone}>{user.phone}</Text>
-          {user.biography ? (
-            <Text style={styles.bio}>{user.biography}</Text>
           ) : null}
+
+          <TouchableOpacity style={styles.editIcon} onPress={handleEditProfile}>
+            <Icon name="edit" size={23} color={colors.text} />
+          </TouchableOpacity>
         </View>
-        <TopBar />
-        <Snackbar
-          visible={visible}
-          duration={2000}
-          onDissmiss={onDismissSnackBar}>
-          You're already a premium user
-        </Snackbar>
-      </ScrollView>
-    </View>
+        <Text style={styles.phone}>{user.phone}</Text>
+        {user.biography ? (
+          <Text style={styles.bio}>{user.biography}</Text>
+        ) : null}
+      </View>
+      <TopBar />
+      <Snackbar
+        visible={visible}
+        duration={2000}
+        onDissmiss={onDismissSnackBar}>
+        You're already a premium user
+      </Snackbar>
+    </Animated.View>
   );
 };
 
@@ -69,7 +61,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 25,
     backgroundColor: colors.white,
-    paddingHorizontal: 5,
     elevation: 7,
   },
   contentContainerStyle: {
@@ -96,7 +87,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: 27,
     justifyContent: 'center',
     alignItems: 'center',
   },

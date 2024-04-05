@@ -191,3 +191,23 @@ export const getCountries = async (): Promise<IResponse> => {
     throw new Error('Unable to fetch countries');
   }
 };
+
+export const getArticlesByUser = async (userId: number, offset: number) => {
+  try {
+    const token = await Keychain.getGenericPassword();
+    const req = await fetch(
+      `${API_URL}/articles/owner?user=${userId}&page=${offset}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: (token && token?.password) as string,
+        },
+      },
+    );
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to fetch articles');
+  }
+};

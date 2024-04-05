@@ -1,7 +1,8 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {View, Text} from 'react-native';
+import {View, Text, useWindowDimensions, StyleSheet} from 'react-native';
 import colors from 'themes/colors';
+import MyArticles from 'components/MyArticles';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -11,17 +12,18 @@ const Test = () => (
   </View>
 );
 const TopBar = () => {
+  const {width} = useWindowDimensions();
   return (
     <Tab.Navigator
+      sceneContainerStyle={styles.scene}
       screenOptions={{
         tabBarStyle: {
           backgroundColor: colors.dark,
-          borderRadius: 5,
         },
       }}>
       <Tab.Screen
         name="MyProducts"
-        component={Test}
+        component={MyArticles}
         options={{
           tabBarLabelStyle: {
             fontWeight: '700',
@@ -33,27 +35,8 @@ const TopBar = () => {
           tabBarIndicatorStyle: {
             backgroundColor: colors.primary,
             height: 3,
-            width: 40,
-            left: '11%',
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Account"
-        component={Test}
-        options={{
-          tabBarLabelStyle: {
-            fontWeight: '700',
-            fontSize: 11,
-          },
-          tabBarLabel: 'Mon Compte',
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.white,
-          tabBarIndicatorStyle: {
-            backgroundColor: colors.primary,
-            height: 3,
-            width: 40,
-            left: '11%',
+            width: width / 8,
+            left: '18%',
           },
         }}
       />
@@ -71,12 +54,18 @@ const TopBar = () => {
           tabBarIndicatorStyle: {
             backgroundColor: colors.primary,
             height: 3,
-            width: 40,
-            left: '11%',
+            width: width / 8,
+            left: '18%',
           },
         }}
       />
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  scene: {
+    backgroundColor: 'transparent',
+  },
+});
 export default TopBar;
