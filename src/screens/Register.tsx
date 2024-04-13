@@ -1,10 +1,13 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useForm, Controller} from 'react-hook-form';
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,52 +15,81 @@ import {
   View,
 } from 'react-native';
 import colors from 'themes/colors';
+import * as Keychain from 'react-native-keychain';
 import z from 'zod';
 import CheckBox from '@react-native-community/checkbox';
-import {nameRegex, phoneRegex} from 'utils/regex';
+import {registerSchema} from 'utils/schema';
+import Dropdown from 'components/Dropdown';
+import useCity from 'hooks/useCity';
+import {login, register} from 'api';
+import {useNavigation} from '@react-navigation/native';
 
-const userSchema = z.object({
-  name: z
-    .string()
-    .min(7, 'Votre nom est trop coup')
-    .max(30, 'Votre nom est trop long')
-    .regex(nameRegex, 'Entrez un nom correct')
-    .trim(),
-  phone: z
-    .string()
-    .max(10, 'Le numéro est de 10 chiffres uniquement')
-    .regex(phoneRegex, 'Le numéro est de 10 chiffres uniquement')
-    .trim(),
-  agree: z.boolean(),
-});
-
-type Inputs = z.infer<typeof userSchema>;
+type Inputs = z.infer<typeof registerSchema>;
 
 const Register = () => {
+  const {data} = useCity(1);
+  const navigation = useNavigation();
   const {
     handleSubmit,
     control,
-    formState: {errors, isValid},
-    watch,
+    setValue,
+    formState: {errors, isValid, isLoading, isSubmitting},
+    reset,
   } = useForm<Inputs>({
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      country_id: 1,
+    },
     mode: 'onChange',
   });
-  const agree = watch('agree');
 
-  const onSubmit = (data: Inputs) => console.log(data);
+  const handleCity = useMemo(() => {
+    const cities = [];
+    if (data && data?.data) {
+      for (const i of data?.data) {
+        cities.push({id: String(i.id), label: i.label, value: String(i.id)});
+      }
+      return cities;
+    }
+    return [];
+  }, [data]);
+
+  const onSubmit = async (values: Inputs) => {
+    const {city_id, country_id, name, phone} = values;
+    const req = await register({city_id, country_id, name, phone});
+    if (req?.success) {
+      const res = await login(phone);
+      if (res.success) {
+        await Keychain.setGenericPassword(`+225${phone}`, res?.data);
+        navigation.navigate('OTP', {
+          phone: `+225${phone}`,
+        });
+        reset();
+        return;
+      }
+      Alert.alert('Error', data?.message);
+    }
+    Alert.alert('Error', req?.message);
+    return;
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.keyboard}>
-      <View style={styles.welcomeView}>
-        <Text style={styles.welcome}>Bienvenue sur eChap!</Text>
-        <Text style={styles.welcomeSub}>Création de compte.</Text>
-      </View>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        showsVerticalScrollIndicator={false}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyle}>
+        <View style={styles.welcomeView}>
+          <Text style={styles.welcome}>Bienvenue sur eChap!</Text>
+          <Text style={styles.welcomeSub}>
+            Créer votre compte en quelques secondes
+          </Text>
+        </View>
 
-      <View style={styles.formView}>
-        <View>
+        <View style={styles.inputView}>
           <Controller
             name="name"
             control={control}
@@ -70,7 +102,7 @@ const Register = () => {
                 placeholder="Nom complet"
                 autoCapitalize="none"
                 style={styles.textInput}
-                placeholderTextColor={colors.text}
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
                 underlineColorAndroid="transparent"
               />
@@ -78,7 +110,8 @@ const Register = () => {
           />
           <Text style={styles.error}>{errors.name?.message}</Text>
         </View>
-        <View style={{flexDirection: 'row', marginTop: 15}}>
+
+        <View style={[styles.phoneRow, styles.inputView]}>
           <View style={styles.inputCode}>
             <View style={styles.textInputCode}>
               <Image
@@ -108,7 +141,7 @@ const Register = () => {
                   placeholder="Numéro de télephone"
                   autoCapitalize="none"
                   style={styles.textInput}
-                  placeholderTextColor={colors.text}
+                  placeholderTextColor={colors.gray.main}
                   selectionColor={colors.primary}
                   underlineColorAndroid="transparent"
                 />
@@ -118,7 +151,39 @@ const Register = () => {
         </View>
         <Text style={styles.error}>{errors.phone?.message}</Text>
 
-        <View style={styles.viewCheckbox}>
+        <View style={styles.inputView}>
+          <Controller
+            name="country_id"
+            control={control}
+            rules={{required: true}}
+            render={({field: {onBlur, onChange}}) => (
+              <TextInput
+                value="Côte d'ivoire"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                placeholder="Pays"
+                editable={false}
+                autoCapitalize="none"
+                style={styles.textInput}
+                placeholderTextColor={colors.text}
+                selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
+              />
+            )}
+          />
+          <Text style={styles.error}>{errors.country_id?.message}</Text>
+        </View>
+
+        <Dropdown
+          data={handleCity}
+          setValue={setValue}
+          placeholderText="Sélectionnez votre ville"
+          name="city_id"
+          style={styles.inputView}
+        />
+        <Text style={styles.error}>{errors.city_id?.message}</Text>
+
+        <View style={[styles.inputView, styles.viewCheckbox]}>
           <Controller
             name="agree"
             control={control}
@@ -139,31 +204,40 @@ const Register = () => {
               />
             )}
           />
-          <Text
-            style={{
-              fontSize: 17,
-              marginLeft: 5,
-            }}>
+          <Text style={styles.terms}>
             J'accepte les termes de confidientialité
           </Text>
         </View>
         <Text style={styles.error}>{errors.agree?.message}</Text>
 
-        {!isValid || !agree ? null : (
-          <TouchableOpacity
-            style={styles.button}
-            disabled={!isValid}
-            onPress={handleSubmit(onSubmit)}>
+        <TouchableOpacity
+          style={styles.button}
+          disabled={!isValid || isLoading || isSubmitting}
+          onPress={handleSubmit(onSubmit)}>
+          {isLoading || isSubmitting ? (
+            <ActivityIndicator color={colors.white} size="small" />
+          ) : (
             <Text style={styles.textButton}>Créer votre compte</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   keyboard: {flex: 1, paddingHorizontal: 20},
+  container: {
+    flex: 1,
+  },
+  terms: {
+    fontSize: 17,
+    marginLeft: 5,
+    color: colors.text,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
   welcomeView: {
     alignItems: 'center',
     marginTop: 40,
@@ -172,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    marginTop: 30,
+    marginTop: 40,
   },
   inputCode: {
     flexDirection: 'row',
@@ -191,6 +265,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 5,
   },
+  phoneRow: {
+    flexDirection: 'row',
+  },
   textInputCode: {
     backgroundColor: colors.white,
     flexDirection: 'row',
@@ -208,6 +285,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.58,
     shadowRadius: 5.0,
     borderRadius: 10,
+  },
+  inputView: {
+    marginTop: 20,
   },
   textInput: {
     textAlign: 'auto',
@@ -230,7 +310,7 @@ const styles = StyleSheet.create({
   error: {
     color: colors.error,
     fontSize: 14,
-    marginVertical: 5,
+    marginTop: 5,
   },
   welcome: {
     fontWeight: '700',
@@ -258,7 +338,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 12,
     },
-    marginTop: 80,
+    marginTop: 40,
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
     elevation: 24,

@@ -168,6 +168,7 @@
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
 			name = echapTests;
+			productName = echapTests;
 			productReference = 00E356EE1AD99517003FC87E /* echapTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -468,6 +469,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = echap/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = echap;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -495,6 +497,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = echap/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = echap;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

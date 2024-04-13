@@ -1,4 +1,4 @@
-export interface IUser {
+export type IUser = {
   id?: number;
   name: string;
   biography?: string;
@@ -10,4 +10,6 @@ export interface IUser {
   whatsapp?: string;
   tiktok?: string;
   instagram?: string;
-}
+};
+
+export type RegisterType = Pick<IUser, 'name' | 'phone'>;

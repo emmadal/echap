@@ -51,6 +51,14 @@ export const userSchema = z.object({
     .min(5, 'Minimum 10 caractères')
     .max(200, 'Maximum 200 caractères')
     .trim(),
+  premium: z.boolean(),
+  photo: z.string().url(),
+  phone: z
+    .string({
+      required_error: 'Entrez votre contact ',
+    })
+    .regex(phoneRegex, 'Entrez un contact valide')
+    .trim(),
   city_id: z.number({
     required_error: 'Selectionnez votre ville',
   }),
@@ -85,4 +93,35 @@ export const userSchema = z.object({
     })
     .url()
     .optional(),
+});
+
+export const registerSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Champ obligatoire',
+    })
+    .min(5, 'Minimum 05 caractères')
+    .max(100, 'Maximum 100 caractères')
+    .trim(),
+  phone: z
+    .string({
+      required_error: 'Entrez votre contact ',
+    })
+    .regex(phoneRegex, 'Entrez un contact valide')
+    .trim(),
+  city_id: z
+    .number({
+      required_error: 'Selectionnez votre ville',
+    })
+    .gt(0, 'Veuillez choisir une ville'),
+  country_id: z
+    .number({
+      required_error: 'Selectionnez votre pays',
+    })
+    .gt(0, 'Veuillez choisir votre pays'),
+  agree: z
+    .boolean({
+      required_error: 'Veuillez cocher la case',
+    })
+    .default(false),
 });

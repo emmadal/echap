@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ViewStyle} from 'react-native';
 import colors from 'themes/colors';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -13,9 +13,16 @@ type Props = {
   setValue: any;
   placeholderText: string;
   name: string;
+  style?: ViewStyle;
 };
 
-const Dropdown: FC<Props> = ({data, setValue, placeholderText, name}) => {
+const Dropdown: FC<Props> = ({
+  data,
+  setValue,
+  placeholderText,
+  name,
+  style,
+}) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const placeholder = {
     label: placeholderText,
@@ -23,7 +30,7 @@ const Dropdown: FC<Props> = ({data, setValue, placeholderText, name}) => {
   };
 
   return (
-    <View style={styles.viewInput}>
+    <View style={style}>
       <RNPickerSelect
         placeholder={placeholder}
         items={data}
@@ -44,7 +51,7 @@ const Dropdown: FC<Props> = ({data, setValue, placeholderText, name}) => {
         style={{
           ...pickerSelectStyles,
           iconContainer: {
-            top: 10,
+            top: 15,
             right: 12,
           },
         }}
@@ -53,55 +60,45 @@ const Dropdown: FC<Props> = ({data, setValue, placeholderText, name}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  viewInput: {
-    flex: 1,
-  },
-  inputIOS: {
-    fontSize: 15,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: colors.text,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 15,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: colors.text,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-});
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 15,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
     textAlign: 'auto',
-    borderWidth: 0.6,
-    borderColor: colors.text,
-    backgroundColor: colors.gray.light,
-    borderRadius: 2,
+    backgroundColor: colors.white,
     color: colors.text,
-    paddingRight: 30, // to ensure the text is never behind the icon
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    padding: 13,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
+    paddingRight: 30,
   },
   inputAndroid: {
-    fontSize: 15,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
     textAlign: 'auto',
-    borderWidth: 0.6,
-    borderColor: colors.text,
-    backgroundColor: colors.gray.light,
-    borderRadius: 2,
+    backgroundColor: colors.white,
     color: colors.text,
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    padding: 13,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
+
 export default Dropdown;

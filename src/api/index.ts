@@ -35,6 +35,22 @@ export const login = async (phone: string) => {
   }
 };
 
+export const register = async (data: any): Promise<IResponse> => {
+  try {
+    const req = await fetch(`${API_URL}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({...data}),
+    });
+    const response = await req.json();
+    return response;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const getOTP = async () => {
   try {
     const token = await Keychain.getGenericPassword();
