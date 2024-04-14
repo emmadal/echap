@@ -4,6 +4,8 @@ export type IUser = {
   biography?: string;
   premium: boolean;
   phone: string;
+  is_active: boolean;
+  role: boolean;
   country_id: number;
   city_id: number;
   photo?: string;
