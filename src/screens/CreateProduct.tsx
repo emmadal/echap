@@ -235,7 +235,7 @@ const CreateProduct = () => {
                 placeholder="Titre"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
+                placeholderTextColor={colors.gray.main}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={styles.input}
@@ -257,7 +257,7 @@ const CreateProduct = () => {
                 placeholder="Prix"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
+                placeholderTextColor={colors.gray.main}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={styles.input}
@@ -279,7 +279,7 @@ const CreateProduct = () => {
                 placeholder="Numéro de téléphone"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
+                placeholderTextColor={colors.gray.main}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={styles.input}
@@ -383,7 +383,7 @@ const CreateProduct = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.gray.light,
     paddingBottom: 100,
     paddingHorizontal: 5,
   },
@@ -402,41 +402,66 @@ const styles = StyleSheet.create({
     color: colors.gray.main,
   },
   richTextEditorStyle: {
-    borderWidth: 0.5,
     backgroundColor: colors.gray.light,
-    borderColor: colors.gray.main,
-    fontSize: 20,
-    borderRadius: 2,
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
   },
   error: {
     color: colors.error,
     marginTop: 2,
   },
   input: {
-    backgroundColor: colors.gray.light,
-    padding: 15,
-    width: '100%',
-    color: colors.text,
-    borderColor: colors.dark,
-    borderWidth: 0.5,
-    borderRadius: 2,
     textAlign: 'auto',
-    fontSize: 15,
+    backgroundColor: colors.white,
+    color: colors.text,
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    padding: 13,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
   },
   progress: {
     marginTop: 10,
   },
   uploadZone: {
-    borderRadius: 5,
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: colors.text,
+    borderStyle: 'solid',
     backgroundColor: colors.gray.light,
     marginTop: 15,
     height: 130,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    padding: 13,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
   },
   img: {
     borderRadius: 50,
@@ -468,7 +493,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   placeholder: {
-    color: colors.text,
+    color: colors.gray.main,
   },
 });
 
