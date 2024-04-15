@@ -55,7 +55,7 @@ const OTP = ({route}) => {
         });
         return;
       }
-      Alert.alert('Error', data.message);
+      Alert.alert('Erreur', data.message);
       return;
     },
     onError(error) {

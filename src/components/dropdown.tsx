@@ -10,6 +10,7 @@ const ChevronDown = () => (
 
 type Props = {
   data: any[];
+  defaultValue?: number;
   setValue: any;
   placeholderText: string;
   name: string;
@@ -22,6 +23,7 @@ const Dropdown: FC<Props> = ({
   placeholderText,
   name,
   style,
+  defaultValue,
 }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const placeholder = {
@@ -39,7 +41,7 @@ const Dropdown: FC<Props> = ({
           setValue(`${name}`, Number(text));
           setSelectedValue(text);
         }}
-        value={selectedValue}
+        value={selectedValue || defaultValue}
         textInputProps={{
           underlineColorAndroid: 'transparent',
           autoCapitalize: 'none',

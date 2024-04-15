@@ -53,6 +53,8 @@ export const userSchema = z.object({
     .trim(),
   premium: z.boolean(),
   photo: z.string().url(),
+  is_active: z.boolean(),
+  role: z.boolean(),
   phone: z
     .string({
       required_error: 'Entrez votre contact ',

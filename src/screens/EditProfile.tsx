@@ -32,7 +32,6 @@ type Inputs = z.infer<typeof userSchema>;
 
 const EditProfile = () => {
   const user = useStore(state => state.user);
-  const updatePhoto = useStore(state => state.updatePhoto);
   const getUserProfile = useStore(state => state.getUserProfile);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -44,18 +43,24 @@ const EditProfile = () => {
     handleSubmit,
     control,
     setValue,
+    watch,
     formState: {errors, isLoading, isSubmitting},
   } = useForm<Inputs>({
     resolver: zodResolver(userSchema),
     mode: 'onChange',
     defaultValues: {
-      name: user.name,
-      biography: user.biography,
-      whatsapp: user.whatsapp,
-      tiktok: user.tiktok,
-      instagram: user.instagram,
+      name: user?.name,
+      phone: user?.phone,
+      photo: user?.photo,
+      premium: user?.premium,
+      is_active: user?.is_active,
+      role: user?.role,
       city_id: user?.city_id,
       country_id: user?.country_id,
+      biography: user.biography || '',
+      whatsapp: user.whatsapp || '',
+      tiktok: user.tiktok || '',
+      instagram: user.instagram || '',
     },
   });
 
@@ -102,14 +107,11 @@ const EditProfile = () => {
         const req = await uploadFile(formdata);
         if (req.success) {
           startTransition(() => {
+            setValue('photo', req?.data);
             setLoading(false);
-            updatePhoto(req?.data);
           });
-          return;
         }
       }
-      setLoading(false);
-      updatePhoto(user?.photo);
       return;
     }
   };
@@ -120,8 +122,9 @@ const EditProfile = () => {
       ...profile,
       country_id: user.country_id,
       premium: user.premium,
-      photo: user.photo,
       phone: user?.phone,
+      role: user?.role,
+      is_active: user?.is_active,
     };
     const req = await updateUserProfile(obj, user?.id!);
     return req;
@@ -129,15 +132,15 @@ const EditProfile = () => {
 
   // send data to the server
   const {mutate, isPending} = useMutation({
-    mutationFn: async values => await processForm(values),
-    onSuccess: async (response) => {
+    mutationFn: async (values: Inputs) => await processForm(values),
+    onSuccess: async response => {
       await queryClient.invalidateQueries({
         queryKey: ['user', user?.id],
       });
       startTransition(() => {
         getUserProfile(response.data);
         setVisible(!visible);
-        setMessage(response?.message);
+        setMessage('Profil mise à jour');
       });
     },
     onError: err => {
@@ -155,14 +158,13 @@ const EditProfile = () => {
         style={styles.container}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
-        keyboardShouldPersistTaps="always"
         contentContainerStyle={styles.ContainerStyle}>
         <TouchableOpacity
           disabled={loading}
           style={styles.avatar}
           onPress={processFile}>
-          {user?.photo ? (
-            <Avatar size={70} source={user.photo!} />
+          {watch('photo')?.length || user.photo ? (
+            <Avatar size={70} source={(watch('photo') || user.photo) ?? ''} />
           ) : (
             <View style={styles.iconImg}>
               <Icon name="add-a-photo" size={45} color={colors.text} />
@@ -177,7 +179,6 @@ const EditProfile = () => {
           ) : null}
         </TouchableOpacity>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Nom complet</Text>
           <Controller
             control={control}
             rules={{required: true}}
@@ -187,30 +188,29 @@ const EditProfile = () => {
                 placeholder="Nom complet"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={styles.input}
-                maxLength={200}
-                underlineColorAndroid="transparent"
+                maxLength={100}
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
               />
             )}
           />
           <Text style={styles.error}>{errors?.name?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Localité</Text>
           <Dropdown
             data={handleCities}
             setValue={setValue}
             placeholderText="Sélectionnez votre ville"
             name="city_id"
+            defaultValue={user.city_id}
           />
           <Text style={styles.error}>{errors?.city_id?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Biographie</Text>
           <Controller
             control={control}
             rules={{required: true}}
@@ -220,21 +220,20 @@ const EditProfile = () => {
                 placeholder="Biographie"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={[styles.input, {minHeight: 100}]}
                 multiline
-                maxLength={250}
-                underlineColorAndroid="transparent"
+                maxLength={200}
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
               />
             )}
           />
           <Text style={styles.error}>{errors?.biography?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Contact Whatsapp</Text>
           <Controller
             control={control}
             rules={{required: false}}
@@ -244,19 +243,20 @@ const EditProfile = () => {
                 placeholder="Whatsapp"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
                 onChangeText={onChange}
+                inputMode="tel"
+                keyboardType="phone-pad"
                 onBlur={onBlur}
                 style={styles.input}
-                underlineColorAndroid="transparent"
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
               />
             )}
           />
           <Text style={styles.error}>{errors?.whatsapp?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Profil Instagram</Text>
           <Controller
             control={control}
             rules={{required: false}}
@@ -266,34 +266,34 @@ const EditProfile = () => {
                 placeholder="Instagram"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
+                inputMode="url"
                 onChangeText={onChange}
                 onBlur={onBlur}
                 style={styles.input}
-                underlineColorAndroid="transparent"
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
               />
             )}
           />
           <Text style={styles.error}>{errors?.instagram?.message}</Text>
         </View>
         <View style={styles.viewInput}>
-          <Text style={styles.label}>Profil Tiktok</Text>
           <Controller
             control={control}
-            rules={{required: false}}
             name="tiktok"
             render={({field: {onBlur, onChange, value}}) => (
               <TextInput
                 placeholder="Tiktok"
                 value={value}
                 autoCapitalize="none"
-                placeholderTextColor={colors.text}
                 onChangeText={onChange}
                 onBlur={onBlur}
+                inputMode="url"
                 style={styles.input}
-                underlineColorAndroid="transparent"
+                placeholderTextColor={colors.gray.main}
                 selectionColor={colors.primary}
+                underlineColorAndroid="transparent"
               />
             )}
           />
@@ -333,15 +333,22 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   input: {
-    backgroundColor: colors.gray.light,
-    padding: 15,
-    width: '100%',
-    color: colors.text,
-    borderColor: colors.dark,
-    borderWidth: 0.5,
-    borderRadius: 2,
     textAlign: 'auto',
-    fontSize: 15,
+    backgroundColor: colors.white,
+    color: colors.text,
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 10,
+    padding: 13,
+    fontSize: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
   },
   activityIndicator: {
     position: 'absolute',

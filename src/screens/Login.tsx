@@ -55,10 +55,8 @@ const Login = () => {
     onSuccess: async data => {
       const phone = methods.getValues('phone');
       if (data.success) {
-        await Keychain.setGenericPassword(`+225${phone}`, data?.data);
-        navigation.navigate('OTP', {
-          phone: `+225${phone}`,
-        });
+        await Keychain.setGenericPassword(phone, data?.data);
+        navigation.navigate('OTP', {phone});
         methods.reset();
         return;
       }
@@ -70,8 +68,9 @@ const Login = () => {
   });
 
   const onSubmit = (data: Inputs) => {
-    const phone = `+225${data.phone}`;
-    mutation.mutate({phone});
+    mutation.mutate({
+      phone: data.phone,
+    });
   };
 
   return (
