@@ -8,6 +8,7 @@ const colors = {
   gray: {
     main: 'rgb(107 114 128)',
     light: 'rgb(243 244 246)',
+    focus: 'rgb(228 228 231)',
   },
   navigation: {
     focused: 'rgb(249 115 22)',

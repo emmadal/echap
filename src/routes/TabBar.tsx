@@ -14,6 +14,7 @@ import CreateProduct from 'screens/CreateProduct';
 import Profile from 'screens/Profile';
 import Avatar from 'components/Avatar';
 import {useStore} from 'store';
+import Settings from 'screens/Settings';
 
 const Tab = createBottomTabNavigator();
 
@@ -136,7 +137,7 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="Settings"
-        component={Test}
+        component={Settings}
         options={{
           headerTitle: 'Paramètres',
           headerStyle: {
