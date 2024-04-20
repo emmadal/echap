@@ -11,6 +11,7 @@ import {
 import ProductItem from 'components/ProductItem';
 import colors from 'themes/colors';
 import useArticle from 'hooks/useArticle';
+import ErrorUI from './ErrorUI';
 
 const wait = (timeout: number) => {
   return new Promise((resolve: any) => setTimeout(resolve, timeout));
@@ -27,7 +28,7 @@ const EmptyProduct = () => (
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
 const ProductListing = ({search}: {search: string}) => {
-  const {data, isError, isPending, error} = useArticle();
+  const {data, isError, isPending, error, refetch} = useArticle();
   const [refreshing, setRefreshing] = useState(false);
 
   // function which trigger the pull refresh
@@ -36,6 +37,7 @@ const ProductListing = ({search}: {search: string}) => {
       setRefreshing(true);
       wait(2000).then(() => {
         setRefreshing(false);
+        refetch();
       });
     } catch (err) {
       setRefreshing(false);
@@ -54,7 +56,7 @@ const ProductListing = ({search}: {search: string}) => {
       {isPending ? (
         <ActivityIndicator color={colors.primary} size="large" />
       ) : isError ? (
-        <Text style={styles.error}>{error?.message}</Text>
+        <ErrorUI error={error} refetch={refetch} />
       ) : (
         <FlatList
           data={filterData() || []}

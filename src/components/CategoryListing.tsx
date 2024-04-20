@@ -12,7 +12,7 @@ import {
 import {useStore} from 'store';
 import useCategory from 'hooks/useCategory';
 import colors from 'themes/colors';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
 const EmptyItem = () => (
@@ -24,14 +24,17 @@ const EmptyItem = () => (
 const CategoryListing = (): React.JSX.Element => {
   const changeCategory = useStore(state => state.changeCategory);
   const categoryId = useStore(state => state.category);
-  const {isPending, isError, data, error} = useCategory();
+  const {isPending, isError, data, error, refetch} = useCategory();
 
   return (
     <SafeAreaView style={styles.container}>
       {isPending ? (
         <ActivityIndicator size="large" color={colors.primary} />
       ) : isError ? (
-        <Text style={styles.error}>{error?.message}</Text>
+        <TouchableOpacity onPress={() => refetch()} style={styles.catError}>
+          <Text style={styles.error}>{error?.message}</Text>
+          <Icon color={colors.text} name="refresh" size={20} />
+        </TouchableOpacity>
       ) : (
         <FlatList
           data={data?.data || []}
@@ -113,6 +116,11 @@ const styles = StyleSheet.create({
     color: colors.error,
     fontSize: 15,
     textAlign: 'center',
+  },
+  catError: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
