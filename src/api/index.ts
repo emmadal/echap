@@ -244,3 +244,21 @@ export const deleteArticle = async (articleId: number): Promise<IResponse> => {
     throw new Error('Unable to delete the article');
   }
 };
+
+export const reportIssues = async (data: any): Promise<IResponse> => {
+  try {
+    const token = await Keychain.getGenericPassword();
+    const req = await fetch(`${API_URL}/report-issues`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: (token && token?.password) as string,
+      },
+      body: JSON.stringify({...data}),
+    });
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to report your issues');
+  }
+};

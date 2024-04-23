@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {StyleSheet} from 'react-native';
 import colors from 'themes/colors';
 import EditProfile from 'screens/EditProfile';
+import Support from 'screens/Support';
 
 const Stack = createStackNavigator();
 
@@ -21,7 +22,7 @@ const BackIcon = memo(() => (
     name="chevron-left"
     size={28}
     style={styles.backIcon}
-    color={colors.text}
+    color={colors.white}
   />
 ));
 
@@ -42,9 +43,13 @@ const MyStack = () => {
           headerBackTitleVisible: false,
           title: splitTitle(route?.params?.title),
           headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: 'white',
+          },
           headerStyle: {
             borderBottomColor: 'transparent',
             borderBottomWidth: 0,
+            backgroundColor: colors.primary,
           },
           headerBackImage: () => (<BackIcon />) as React.ReactNode,
         })}
@@ -52,16 +57,32 @@ const MyStack = () => {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
-        options={({route}: any) => ({
+        options={{
           headerBackTitleVisible: false,
           title: 'Modifier mon profil',
-          headerTitleAlign: 'center',
           headerStyle: {
-            borderBottomColor: 'transparent',
-            borderBottomWidth: 0,
+            backgroundColor: colors.primary,
+          },
+          headerTitleStyle: {
+            color: 'white',
           },
           headerBackImage: () => (<BackIcon />) as React.ReactNode,
-        })}
+        }}
+      />
+      <Stack.Screen
+        name="Support"
+        component={Support}
+        options={{
+          headerBackTitleVisible: false,
+          title: 'Support',
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTitleStyle: {
+            color: 'white',
+          },
+          headerBackImage: () => (<BackIcon />) as React.ReactNode,
+        }}
       />
     </Stack.Navigator>
   );

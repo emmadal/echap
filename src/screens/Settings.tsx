@@ -5,16 +5,18 @@ import * as Keychain from 'react-native-keychain';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import colors from 'themes/colors';
 import {useStore} from 'store';
+import {useNavigation} from '@react-navigation/native';
 
 const Settings = () => {
   const signOut = useStore(state => state.signOut);
+  const navigation = useNavigation();
   const handleLogOut = async () => {
     await Keychain.resetGenericPassword();
     signOut();
   };
   return (
     <View style={styles.container}>
-      <View style={styles.blockContainer}>
+      {/* <View style={styles.blockContainer}>
         <Text style={styles.title}>Accessibilité</Text>
         <View style={styles.card}>
           <TouchableOpacity style={styles.pressable}>
@@ -39,18 +41,22 @@ const Settings = () => {
             <EvilIcon name="chevron-right" size={25} />
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
       <View style={styles.blockContainer}>
         <Text style={styles.title}>Support</Text>
         <View style={styles.card}>
-          <TouchableOpacity style={styles.pressable}>
+          {/* <TouchableOpacity
+            style={styles.pressable}
+            onPress={() => navigation.navigate('Help')}>
             <View style={styles.pressableIcon}>
-              <Icon name="bubbles" size={20} />
-              <Text style={styles.textPressableIcon}>Reporter un problème</Text>
+              <Icon name="question" size={20} />
+              <Text style={styles.textPressableIcon}>Aide</Text>
             </View>
             <EvilIcon name="chevron-right" size={25} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.pressable}>
+          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={styles.pressable}
+            onPress={() => navigation.navigate('Support')}>
             <View style={styles.pressableIcon}>
               <Icon name="earphones-alt" size={20} />
               <Text style={styles.textPressableIcon}>Support</Text>

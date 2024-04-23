@@ -127,3 +127,23 @@ export const registerSchema = z.object({
     })
     .default(false),
 });
+
+export const helpSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Champ obligatoire',
+    })
+    .min(5, 'Minimum 05 caractères')
+    .max(100, 'Maximum 100 caractères')
+    .trim(),
+  subject: z
+    .string({
+      required_error: 'Champ obligatoire',
+    })
+    .min(5, 'Minimum 05 caractères')
+    .max(100, 'Maximum 100 caractères')
+    .trim(),
+  description: z.string({
+    required_error: 'Champ obligatoire',
+  }),
+});

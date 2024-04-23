@@ -40,7 +40,6 @@ const Profile = () => {
             <Icon name="edit" size={23} color={colors.text} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.phone}>{user.phone}</Text>
         {user.biography ? (
           <Text style={styles.bio}>{user.biography}</Text>
         ) : null}
@@ -66,13 +65,6 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },
-  phone: {
-    fontSize: 16,
-    color: colors.gray.main,
-    fontWeight: '700',
-    marginTop: 7,
-    marginBottom: 13,
-  },
   name: {
     fontSize: 20,
     color: colors.text,
@@ -82,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.text,
     width: Dimensions.get('screen').width / 1.5,
-    marginBottom: 15,
+    marginVertical: 17,
     textAlign: 'center',
   },
   userInfo: {
