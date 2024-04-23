@@ -110,7 +110,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
+
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // If your app supports Android versions before Ice Cream Sandwich (API level 14)
