@@ -27,6 +27,7 @@ import {productSchema} from 'utils/schema';
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
+import Button from 'components/Button';
 
 type Inputs = z.infer<typeof productSchema>;
 
@@ -361,20 +362,12 @@ const CreateProduct = () => {
           />
           <Text style={styles.error}>{errors?.description?.message}</Text>
         </View>
-        <TouchableOpacity
+        <Button
           disabled={pending || isLoading || isSubmitting}
+          onPress={handleSubmit(mutate)}
+          title="Créer l'article"
           style={styles.button}
-          onPress={handleSubmit(mutate)}>
-          {isSubmitting || isLoading || pending ? (
-            <ActivityIndicator
-              animating={isSubmitting || isLoading}
-              color={colors.primary}
-              size="large"
-            />
-          ) : (
-            <Text style={styles.textButton}>Créer l'article</Text>
-          )}
-        </TouchableOpacity>
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -470,22 +463,8 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   button: {
-    borderRadius: 10,
-    backgroundColor: colors.white,
-    padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.5)',
-    height: 55,
     marginTop: 20,
     marginBottom: 100,
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-    elevation: 24,
   },
   textButton: {
     color: colors.primary,
