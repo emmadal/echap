@@ -7,6 +7,7 @@ import {StyleSheet} from 'react-native';
 import colors from 'themes/colors';
 import EditProfile from 'screens/EditProfile';
 import Support from 'screens/Support';
+import Pricing from 'screens/Pricing';
 
 const Stack = createStackNavigator();
 
@@ -84,13 +85,28 @@ const MyStack = () => {
           headerBackImage: () => (<BackIcon />) as React.ReactNode,
         }}
       />
+      <Stack.Screen
+        name="Pricing"
+        component={Pricing}
+        options={{
+          headerBackTitleVisible: false,
+          title: 'Souscription',
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTitleStyle: {
+            color: 'white',
+          },
+          headerBackImage: () => (<BackIcon />) as React.ReactNode,
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   backIcon: {
-    marginLeft: 10,
+    marginLeft: 25,
   },
 });
 

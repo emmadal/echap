@@ -1,12 +1,6 @@
 import React, {memo} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {
-  View,
-  Text,
-  StyleSheet,
-  useWindowDimensions,
-  Pressable,
-} from 'react-native';
+import {View, StyleSheet, useWindowDimensions, Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Home from 'screens/Home';
 import colors from 'themes/colors';
@@ -15,14 +9,9 @@ import Profile from 'screens/Profile';
 import Avatar from 'components/Avatar';
 import {useStore} from 'store';
 import Settings from 'screens/Settings';
+import Message from 'screens/Message';
 
 const Tab = createBottomTabNavigator();
-
-const Test = () => (
-  <View>
-    <Text>Hello</Text>
-  </View>
-);
 
 type TabIconProps = {
   focused: boolean;
@@ -71,7 +60,7 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="Message"
-        component={Test}
+        component={Message}
         options={{
           headerTitle: 'Messagerie',
           headerStyle: {

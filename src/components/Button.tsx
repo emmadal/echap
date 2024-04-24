@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'center',
-    height: 50,
+    height: 45,
     shadowOffset: {
       width: 0,
       height: 12,
