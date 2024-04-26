@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
 import {AppState, Platform, StyleSheet} from 'react-native';
 import type {AppStateStatus} from 'react-native';
-import {focusManager} from '@tanstack/react-query';
+import {focusManager, onlineManager} from '@tanstack/react-query';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
+import NetInfo from '@react-native-community/netinfo';
 import MyStack from 'routes/MyStack';
 import OnBoarding from 'routes/OnBoarding';
 import {useStore} from 'store';
@@ -28,6 +29,12 @@ function App(): React.JSX.Element {
     const subscription = AppState.addEventListener('change', onAppStateChange);
     return () => subscription.remove();
   }, []);
+
+  onlineManager.setEventListener(setOnline => {
+    return NetInfo.addEventListener(state => {
+      setOnline(!!state.isConnected);
+    });
+  });
 
   return (
     <GestureHandlerRootView style={styles.container}>

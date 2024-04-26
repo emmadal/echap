@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" /> 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -16,9 +17,15 @@
       </intent>
       <package android:name="com.whatsapp"/>
       <package android:name="com.whatsapp.w4b"/>
+      <package android:name="com.instagram.android"/>
+      <package android:name="com.facebook.katana" />
+      <package android:name="com.facebook.orca" />
+      <package android:name="com.facebook.mlite" />
+      <package android:name="com.facebook.lite" />
     </queries>
 
     <application
+      android:usesCleartextTraffic="true"
       android:name=".MainApplication"
       android:launchMode="singleTask"
       android:label="@string/app_name"

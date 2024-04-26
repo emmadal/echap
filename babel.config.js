@@ -31,7 +31,7 @@ module.exports = {
         safe: true,
         allowUndefined: false,
         verbose: false,
-        allowlist: ['API_URL', 'API_SMS', 'API_OM', 'API_MTN', 'API_WAVE'],
+        allowlist: ['API_URL', 'API_SMS'],
       },
     ],
   ],
