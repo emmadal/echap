@@ -40,25 +40,20 @@ const ProductItem = ({item}: {item: IPost}) => {
 
 const styles = StyleSheet.create({
   image: {
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    height: 250,
-    maxHeight: 300,
-    borderRadius: 5,
+    alignSelf: 'center',
+    aspectRatio: 1,
+    height: 270,
   },
   card: {
-    backgroundColor: 'rgb(229 231 235)',
-    flex: 1,
+    backgroundColor: colors.white,
     margin: 10,
-    maxHeight: 250,
-    borderRadius: 5,
-    maxWidth: '50%',
+    borderRadius: 15,
   },
   title: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#4a4a4a',
-    marginTop: 3,
+    fontWeight: '700',
+    color: colors.text,
+    margin: 15,
   },
   activityIndicator: {
     position: 'absolute',

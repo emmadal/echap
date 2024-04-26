@@ -25,9 +25,7 @@ const EmptyProduct = () => (
   </View>
 );
 
-const ItemSeparator = () => <View style={styles.separatorWidth} />;
-
-const ProductListing = ({search}: {search: string}) => {
+const ProductListing = () => {
   const {data, isError, isPending, error, refetch} = useArticle();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -44,13 +42,6 @@ const ProductListing = ({search}: {search: string}) => {
     }
   }, []);
 
-  const filterData = () => {
-    const results = data?.data?.filter((i: {title: string}) =>
-      i.title.toLowerCase().includes(search.toLowerCase()),
-    );
-    return results || data?.data;
-  };
-
   return (
     <View style={styles.container}>
       {isPending ? (
@@ -59,13 +50,9 @@ const ProductListing = ({search}: {search: string}) => {
         <ErrorUI error={error} refetch={refetch} />
       ) : (
         <FlatList
-          data={filterData() || []}
-          ItemSeparatorComponent={ItemSeparator}
+          data={data?.data}
           style={styles.container}
-          horizontal={false}
-          columnWrapperStyle={styles.columnWrapperStyle}
           contentContainerStyle={styles.contentContainerStyle}
-          numColumns={2}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           keyExtractor={item => String(item?.id)}
@@ -92,15 +79,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 20,
   },
-  columnWrapperStyle: {
-    flexWrap: 'wrap',
-  },
   contentContainerStyle: {
     flexGrow: 1,
     paddingBottom: 85,
-  },
-  separatorWidth: {
-    height: 80,
   },
   emptyView: {
     flex: 1,

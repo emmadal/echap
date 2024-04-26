@@ -42,7 +42,6 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <CategoryListing />
       <View style={styles.inputView}>
         <SearchBar
           setCLicked={setCLicked}
@@ -54,7 +53,8 @@ const Home = () => {
           <Icon name="options" size={27} color="color: rgb(82 82 82)" />
         </Pressable>
       </View>
-      <ProductListing search={searchPhrase} />
+      <CategoryListing />
+      <ProductListing />
       <BottomSheet
         ref={sheetRef}
         enablePanDownToClose
@@ -76,8 +76,8 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 40 : 25,
-    backgroundColor: colors.white,
+    marginTop: Platform.OS === 'ios' ? 40 : 30,
+    backgroundColor: colors.gray.light,
     padding: 10,
   },
   inputView: {

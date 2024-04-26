@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   FlatList,
-  Platform,
   TouchableOpacity,
   StyleSheet,
   Text,
@@ -17,7 +16,7 @@ const ItemSeparator = () => <View style={styles.separatorWidth} />;
 
 const EmptyItem = () => (
   <View style={styles.emptyView}>
-    <Text style={styles.empty}>Aucune categorie </Text>
+    <Text style={styles.empty}>Aucune categorie</Text>
   </View>
 );
 
@@ -72,13 +71,13 @@ const CategoryListing = (): React.JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 40 : 20,
+    marginVertical: 15,
   },
   categoryPressable: {
     width: 'auto',
     borderRadius: 17,
     padding: 8,
-    backgroundColor: 'rgb(229 231 235)',
+    backgroundColor: colors.gray.focus,
     margin: 5,
   },
   categoryText: {
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     width: 3,
   },
   selected: {
-    backgroundColor: 'rgb(249 115 22)',
+    backgroundColor: colors.primary,
     borderWidth: 0,
   },
   textSelected: {

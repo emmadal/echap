@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: 10,
-    width: '70%',
+    width: '77%',
+    borderRadius: 10,
   },
   searchBar__unclicked: {
     padding: 10,
@@ -64,6 +65,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(243 244 246)',
     borderRadius: 25,
     alignItems: 'center',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 2,
+    shadowRadius: 5.0,
   },
   searchBar__clicked: {
     padding: 10,
@@ -73,10 +82,19 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    elevation: 20,
+    shadowOpacity: 0.58,
+    shadowRadius: 5.0,
   },
   input: {
     fontSize: 18,
     marginLeft: 10,
     width: '90%',
+    textAlign: 'auto',
   },
 });
