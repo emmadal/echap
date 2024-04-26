@@ -19,7 +19,6 @@ const Profile = () => {
   const navigation = useNavigation();
   const user = useStore(state => state.user);
   const [visible, setVisible] = React.useState(false);
-
   const handleEditProfile = () => navigation.navigate('EditProfile');
 
   const handleVisible = () => setVisible(!visible);
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 25,
-    backgroundColor: colors.white,
+    backgroundColor: colors.gray.light,
     elevation: 7,
   },
   contentContainerStyle: {

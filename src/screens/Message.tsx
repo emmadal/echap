@@ -31,7 +31,7 @@ const Message = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.gray.focus,
+    backgroundColor: colors.gray.light,
     padding: 30,
   },
   desc: {

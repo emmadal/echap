@@ -1,4 +1,4 @@
-import React, {useState, startTransition} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -35,7 +35,7 @@ const pinSize = pinContainerSize / pinLength;
 
 const OTP = ({route}) => {
   useOTP();
-  const getUserProfile = useStore(state => state.getUserProfile);
+  const updateProfile = useStore(state => state.updateProfile);
   const [code, setCode] = useState([]);
   const {phone} = route.params;
   const methods = useForm<Inputs>({
@@ -50,9 +50,7 @@ const OTP = ({route}) => {
     },
     onSuccess: (data: any) => {
       if (data?.success) {
-        startTransition(() => {
-          getUserProfile(data?.data);
-        });
+        updateProfile(data?.data);
         return;
       }
       Alert.alert('Erreur', data.message);

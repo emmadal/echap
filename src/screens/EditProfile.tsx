@@ -32,7 +32,7 @@ type Inputs = z.infer<typeof userSchema>;
 
 const EditProfile = () => {
   const user = useStore(state => state.user);
-  const getUserProfile = useStore(state => state.getUserProfile);
+  const updateProfile = useStore(state => state.updateProfile);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false);
@@ -138,7 +138,7 @@ const EditProfile = () => {
         queryKey: ['user', user?.id],
       });
       startTransition(() => {
-        getUserProfile(response.data);
+        updateProfile(response.data);
         setVisible(!visible);
         setMessage('Profil mise à jour');
       });
