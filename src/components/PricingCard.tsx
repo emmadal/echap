@@ -1,30 +1,13 @@
-import React, {useEffect, useRef} from 'react';
-import {Animated, Easing, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import colors from 'themes/colors';
 import {Plan} from 'types/plan';
 import Button from './Button';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const PricingCard = ({item}: {item: Plan}) => {
-  const scale = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(scale, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-      easing: Easing.ease,
-    }).start();
-  }, []);
-
   return (
-    <Animated.View
-      style={[
-        styles.card,
-        {
-          transform: [{scale}],
-        },
-      ]}>
+    <Animated.View style={styles.card}>
       <Icon name="star" color={colors.primary} size={17} style={styles.icon} />
       <Text style={styles.title}>{item.plan}</Text>
       <Text style={styles.price}>{item.price}</Text>
