@@ -16,7 +16,7 @@ const Snackbar = ({
   duration = 4000,
   textColor = 'white',
   onDissmiss,
-  bgColor = colors.error,
+  bgColor = colors.dark,
 }: Props) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 

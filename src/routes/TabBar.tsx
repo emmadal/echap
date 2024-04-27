@@ -118,7 +118,7 @@ const TabBar = () => {
             borderBottomEndRadius: 300,
           },
           headerBackgroundContainerStyle: {
-            backgroundColor: colors.white,
+            backgroundColor: colors.gray.light,
           },
           tabBarIcon: ({focused}) =>
             (<TabIcon focused={focused} icon="user" />) as React.ReactNode,

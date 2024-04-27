@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   renderView: {
     flex: 1,
-    marginTop: 5,
+    margin: 5,
   },
   emptyView: {
     flex: 1,
@@ -166,12 +166,9 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   image: {
-    resizeMode: 'repeat',
-    justifyContent: 'center',
-    height: 180,
-    width: 133,
+    height: 190,
     borderRadius: 10,
-    margin: 1,
+    aspectRatio: 1,
   },
   indicator: {
     marginTop: 20,

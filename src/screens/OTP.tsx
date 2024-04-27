@@ -51,13 +51,16 @@ const OTP = ({route}) => {
     onSuccess: (data: any) => {
       if (data?.success) {
         updateProfile(data?.data);
+        methods.reset();
         return;
       }
       Alert.alert('Erreur', data.message);
+      methods.reset();
       return;
     },
     onError(error) {
       Alert.alert('Erreur', error.message);
+      methods.reset();
       return;
     },
   });

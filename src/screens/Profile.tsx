@@ -31,7 +31,7 @@ const Profile = () => {
           <Text style={styles.name}>{user.name}</Text>
           {user?.premium ? (
             <TouchableOpacity onPress={handleVisible}>
-              <PremiumSvg fill="rgb(249 115 22)" height={23} width={23} />
+              <PremiumSvg fill="rgb(249 115 22)" height={25} width={25} />
             </TouchableOpacity>
           ) : null}
 
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   userInfo: {
     alignSelf: 'center',
     marginTop: 27,
+    marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },

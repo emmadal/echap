@@ -41,14 +41,14 @@ const TopBar = () => {
         }}
       />
       <Tab.Screen
-        name="Subscription"
+        name="MyStore"
         component={Test}
         options={{
           tabBarLabelStyle: {
             fontWeight: '700',
             fontSize: 11,
           },
-          tabBarLabel: 'Abonnement',
+          tabBarLabel: 'Ma Boutique',
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.white,
           tabBarIndicatorStyle: {

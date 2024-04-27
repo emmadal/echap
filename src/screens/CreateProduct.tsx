@@ -28,6 +28,7 @@ import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import Button from 'components/Button';
+import {NoAddProduct} from 'components/NoAddProduct';
 
 type Inputs = z.infer<typeof productSchema>;
 
@@ -185,7 +186,9 @@ const CreateProduct = () => {
     return;
   };
 
-  return (
+  return !user?.premium ? (
+    <NoAddProduct />
+  ) : (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.keyboard}>

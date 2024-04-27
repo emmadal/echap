@@ -8,7 +8,7 @@ export const pricing: Array<Plan> = [
     features: [
       {
         id: '1',
-        feature: "Création d'articles (03 Max)",
+        feature: "Consultation d'articles",
         icon: true,
       },
       {
@@ -18,27 +18,27 @@ export const pricing: Array<Plan> = [
       },
       {
         id: '3',
-        feature: "Téléchargement d'images limitée",
-        icon: true,
-      },
-      {
-        id: '7',
-        feature: 'Boutique en ligne',
+        feature: "Création d'articles",
         icon: false,
       },
       {
         id: '4',
+        feature: 'Boutique en ligne',
+        icon: false,
+      },
+      {
+        id: '5',
         feature: 'Publicité',
         icon: false,
       },
 
       {
-        id: '5',
+        id: '6',
         feature: 'Assistance virtuelle (24/7)',
         icon: false,
       },
       {
-        id: '6',
+        id: '7',
         feature: 'Chat instantanée',
         icon: false,
       },
