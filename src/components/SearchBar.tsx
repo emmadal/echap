@@ -1,70 +1,71 @@
 import React from 'react';
-import {StyleSheet, TextInput, View, Keyboard, Button} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
+} from 'react-native';
+import {useStore} from 'store';
+import colors from 'themes/colors';
+import {IPost} from 'types/post';
 
 type Props = {
-  clicked: boolean;
   searchPhrase: string;
-  setCLicked: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchPhrase: React.Dispatch<React.SetStateAction<string>>;
+  setProducts: React.Dispatch<React.SetStateAction<IPost[]>>;
+  isFocused: boolean;
 };
 
 const SearchBar = ({
-  clicked,
   searchPhrase,
   setSearchPhrase,
-  setCLicked,
+  setProducts,
+  isFocused,
 }: Props): React.JSX.Element => {
+  const queryClient = useQueryClient();
+  const category_id = useStore(state => state.category);
+
+  const handleKeyPress = async (
+    key: NativeSyntheticEvent<TextInputKeyPressEventData>,
+  ) => {
+    if (key.nativeEvent.key === 'Backspace') {
+      await queryClient.invalidateQueries({
+        queryKey: ['articles', category_id],
+      });
+      setProducts([]);
+      setSearchPhrase('');
+      return;
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <View
-        style={
-          clicked ? styles.searchBar__clicked : styles.searchBar__unclicked
-        }>
-        {/* search Icon */}
-        <Icon name="search" size={20} color="rgb(115 115 115)" />
-        {/* Input field */}
-        <TextInput
-          style={styles.input}
-          placeholder="Recherche..."
-          value={searchPhrase}
-          onChangeText={setSearchPhrase}
-          onFocus={() => setCLicked(true)}
-        />
-      </View>
-      {/* cancel button, depending on whether the search bar is clicked or not */}
-      {clicked && (
-        <Button
-          title="Annuler"
-          onPress={() => {
-            Keyboard.dismiss();
-            setCLicked(false);
-            setSearchPhrase('');
-          }}
-        />
-      )}
+    <View style={styles.searchBar}>
+      <TextInput
+        style={styles.input}
+        placeholder="Votre recherche ici..."
+        placeholderTextColor={colors.gray.main}
+        value={searchPhrase}
+        onChangeText={setSearchPhrase}
+        onKeyPress={handleKeyPress}
+        maxLength={24}
+        cursorColor={colors.primary}
+        editable={isFocused ? true : false}
+      />
     </View>
   );
 };
 export default SearchBar;
 
 const styles = StyleSheet.create({
-  container: {
+  searchBar: {
+    flex: 1,
     marginVertical: 15,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginLeft: 10,
-    width: '77%',
-    borderRadius: 10,
-  },
-  searchBar__unclicked: {
-    padding: 10,
-    flexDirection: 'row',
-    width: '95%',
     backgroundColor: 'rgb(243 244 246)',
     borderRadius: 25,
-    alignItems: 'center',
+    padding: 13,
+    fontSize: 18,
     shadowOffset: {
       width: 0,
       height: 5,
@@ -74,27 +75,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 2,
     shadowRadius: 5.0,
   },
-  searchBar__clicked: {
-    padding: 10,
-    flexDirection: 'row',
-    width: '83%',
-    backgroundColor: 'rgb(229 231 235)',
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowColor: 'rgba(0, 0, 0, 0.5)',
-    elevation: 20,
-    shadowOpacity: 0.58,
-    shadowRadius: 5.0,
-  },
   input: {
     fontSize: 18,
     marginLeft: 10,
-    width: '90%',
     textAlign: 'auto',
   },
 });

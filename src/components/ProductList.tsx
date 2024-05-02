@@ -12,6 +12,7 @@ import ProductItem from 'components/ProductItem';
 import colors from 'themes/colors';
 import useArticle from 'hooks/useArticle';
 import ErrorUI from './ErrorUI';
+import {IPost} from 'types/post';
 
 const wait = (timeout: number) => {
   return new Promise((resolve: any) => setTimeout(resolve, timeout));
@@ -25,7 +26,7 @@ const EmptyProduct = () => (
   </View>
 );
 
-const ProductListing = () => {
+const ProductListing = ({products}: {products: IPost[] | null}) => {
   const {data, isError, isPending, error, refetch} = useArticle();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -40,7 +41,7 @@ const ProductListing = () => {
     } catch (err) {
       setRefreshing(false);
     }
-  }, []);
+  }, [refetch]);
 
   return (
     <View style={styles.container}>
@@ -50,7 +51,7 @@ const ProductListing = () => {
         <ErrorUI error={error} refetch={refetch} />
       ) : (
         <FlatList
-          data={data?.data}
+          data={!products?.length ? data?.data : products}
           style={styles.container}
           contentContainerStyle={styles.contentContainerStyle}
           showsVerticalScrollIndicator={false}

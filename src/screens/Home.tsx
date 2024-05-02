@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Platform,
   StyleSheet,
@@ -15,11 +15,17 @@ import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {optionsFilter} from 'constants/options';
 import {IOption} from 'types/option';
 import colors from 'themes/colors';
+import {searchArticle} from 'api';
+import {useStore} from 'store';
+import {IPost} from 'types/post';
+import {useIsFocused} from '@react-navigation/native';
 
 const Home = () => {
-  const [clicked, setCLicked] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [products, setProducts] = useState<IPost[]>([]);
   const sheetRef = useRef<BottomSheet>(null);
+  const categoryId = useStore(state => state.category);
+  const isFocused = useIsFocused();
 
   const handleClosePress = useCallback(() => {
     sheetRef.current?.forceClose();
@@ -40,21 +46,35 @@ const Home = () => {
     [],
   );
 
+  useEffect(() => {
+    (async () => {
+      if (searchPhrase.trim()?.length < 3 || searchPhrase.trim() === '') {
+        // Don't do anything when search field is empty or less tha 3 chars
+        return;
+      } else {
+        // call API search to find data which match searching text
+        const title = searchPhrase.toLowerCase().trim();
+        const req = await searchArticle(categoryId, title);
+        setProducts(req?.data ?? []);
+      }
+    })();
+  }, [categoryId, searchPhrase]);
+
   return (
     <View style={styles.container}>
       <View style={styles.inputView}>
         <SearchBar
-          setCLicked={setCLicked}
-          clicked={clicked}
           setSearchPhrase={setSearchPhrase}
           searchPhrase={searchPhrase}
+          setProducts={setProducts}
+          isFocused={isFocused}
         />
         <Pressable style={styles.options} onPress={() => handleSnapPress(1)}>
           <Icon name="options" size={27} color="color: rgb(82 82 82)" />
         </Pressable>
       </View>
       <CategoryListing />
-      <ProductListing />
+      <ProductListing products={products} />
       <BottomSheet
         ref={sheetRef}
         enablePanDownToClose
@@ -86,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   options: {
-    marginRight: 10,
+    marginHorizontal: 10,
   },
   contentContainer: {
     backgroundColor: 'white',

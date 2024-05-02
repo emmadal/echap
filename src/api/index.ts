@@ -262,3 +262,26 @@ export const reportIssues = async (data: any): Promise<IResponse> => {
     throw new Error('Unable to report your issues');
   }
 };
+
+export const searchArticle = async (
+  category_id: number,
+  title: string,
+): Promise<IResponse> => {
+  try {
+    const token = await Keychain.getGenericPassword();
+    const req = await fetch(
+      `${API_URL}/search?title=${title}&category=${category_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: (token && token?.password) as string,
+        },
+      },
+    );
+    const response = await req.json();
+    return response;
+  } catch (error) {
+    throw new Error('Unable to search article');
+  }
+};
