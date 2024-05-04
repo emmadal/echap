@@ -5,15 +5,11 @@ export const pricing: Array<Plan> = [
     id: '1',
     plan: 'Gratuit',
     price: '0 FCFA/mois',
+    mode: 'free',
     features: [
       {
         id: '1',
         feature: "Consultation d'articles",
-        icon: true,
-      },
-      {
-        id: '2',
-        feature: 'Assistance support',
         icon: true,
       },
       {
@@ -48,6 +44,7 @@ export const pricing: Array<Plan> = [
     id: '2',
     plan: 'Premium',
     price: '1000 FCFA/mois',
+    mode: 'premium',
     features: [
       {
         id: '1',
@@ -57,11 +54,6 @@ export const pricing: Array<Plan> = [
       {
         id: '2',
         feature: 'Boutique en ligne',
-        icon: true,
-      },
-      {
-        id: '3',
-        feature: 'Assistance support',
         icon: true,
       },
       {

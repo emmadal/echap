@@ -8,5 +8,6 @@ export type Plan = {
   id: string;
   plan: string;
   price: string;
+  mode: string;
   features: Feature[];
 };

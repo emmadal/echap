@@ -2,14 +2,15 @@ import React from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import colors from 'themes/colors';
 import PricingCard from 'components/PricingCard';
-import {pricing} from 'constants/princing';
+import {pricing} from 'constants/pricing';
 
 const Pricing = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Souscription</Text>
+      <Text style={styles.title}>Abonnement</Text>
       <Text style={styles.desc}>
-        Choisissez le bon plan pour vos besoins. Sans frais, Sans contract.
+        Choisissez le bon plan pour vos besoins. Sans frais, sans contract. Vous
+        pouvez annuler votre abonnement à tout moment.
       </Text>
       <FlatList
         style={styles.flatList}

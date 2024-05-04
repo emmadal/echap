@@ -90,7 +90,7 @@ const MyStack = () => {
         component={Pricing}
         options={{
           headerBackTitleVisible: false,
-          title: 'Souscription',
+          title: 'Abonnement',
           headerStyle: {
             backgroundColor: colors.primary,
           },

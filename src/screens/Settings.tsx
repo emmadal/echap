@@ -75,6 +75,20 @@ const Settings = () => {
         </View>
       </View>
       <View style={styles.blockContainer}>
+        <Text style={styles.title}>Abonnement</Text>
+        <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.pressable}
+            onPress={() => navigation.navigate('Pricing')}>
+            <View style={styles.pressableIcon}>
+              <EvilIcon name="credit-card" size={20} />
+              <Text style={styles.textPressableIcon}>Mon abonnement</Text>
+            </View>
+            <EvilIcon name="chevron-right" size={25} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.blockContainer}>
         <Text style={styles.title}>Connexion</Text>
         <View style={styles.card}>
           <TouchableOpacity style={styles.pressable} onPress={handleLogOut}>
