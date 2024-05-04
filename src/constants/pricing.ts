@@ -43,7 +43,7 @@ export const pricing: Array<Plan> = [
   {
     id: '2',
     plan: 'Premium',
-    price: '1000 FCFA/mois',
+    price: '500 FCFA/mois',
     mode: 'premium',
     features: [
       {

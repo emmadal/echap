@@ -34,7 +34,7 @@ const Chip = ({bgColor, children, textColor}: Props) => {
         styles.container,
         {
           backgroundColor: bgColor || colors.primary,
-          width: width / 2.7,
+          width: width / 2.3,
         },
       ]}>
       <Text
