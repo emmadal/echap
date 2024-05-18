@@ -6,14 +6,19 @@ import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import colors from 'themes/colors';
 import {useStore} from 'store';
 import {useNavigation} from '@react-navigation/native';
+import {useQueryClient} from '@tanstack/react-query';
 
 const Settings = () => {
+  const queryClient = useQueryClient();
   const signOut = useStore(state => state.signOut);
   const navigation = useNavigation();
+
   const handleLogOut = async () => {
     await Keychain.resetGenericPassword();
+    queryClient.clear();
     signOut();
   };
+
   return (
     <View style={styles.container}>
       {/* <View style={styles.blockContainer}>
